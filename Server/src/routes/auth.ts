@@ -12,6 +12,7 @@ router.get('/google', (req: Request, res: Response) => {
   const scopes: string[] = [
     'profile',
     'email', 
+    'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/drive.metadata.readonly'
   ];
 
