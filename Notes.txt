@@ -1,0 +1,17 @@
+Backend -- 
+    Login done
+    Get route + Bin done 
+        Filtering for files and folders in Get Route done
+        Bin files Get route done in it as well
+    Delete route done 
+        permanent delete & temporary delete done
+        Bin delete & restore done
+    Rename done
+    Move and Copy done
+    Download Files
+
+TO DO ------------
+
+    Search Files (C)
+    Sharing / Permissions (B)
+    Starred Files (D)

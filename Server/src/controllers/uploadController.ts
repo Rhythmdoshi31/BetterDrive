@@ -32,7 +32,7 @@ export default async (req: MulterRequest, res: Response) => {
 
     const drive = getDriveClient(user.googleRefreshToken);
 
-    const folderId = (req.body.folderId as string) || undefined;
+    const folderId = (req.query.folderId as string) || undefined;
 
     // Since drive needs file as stream..
     const bufferStream = new PassThrough();

@@ -6,10 +6,7 @@ const prisma = new client_1.PrismaClient();
 exports.default = async (req, res) => {
     try {
         console.log("this chamkaradar");
-        const fileId = req.params.fileId;
-        const permanent = req.query.permanent === 'true';
-        if (!fileId)
-            return res.status(400).json({ error: 'File ID Required' });
+        const folderId = req.query.folderId || undefined;
         const userPayload = req.user;
         if (!userPayload) {
             return res.status(401).json({ error: "Unauthorized" });
@@ -21,12 +18,18 @@ exports.default = async (req, res) => {
             return res.status(401).json({ error: "No refresh token found" });
         }
         const drive = (0, googleDriveClient_1.getDriveClient)(user.googleRefreshToken);
-        if (permanent)
-            await drive.files.delete({ fileId });
-        else
-            await drive.files.update({ fileId, requestBody: { trashed: true } });
+        const folderMetadata = {
+            name: req.body.name,
+            mimeType: "application/vnd.google-apps.folder",
+            parents: folderId ? [folderId] : undefined,
+        };
+        const response = await drive.files.create({
+            requestBody: folderMetadata,
+            fields: "id, name, mimeType, parents, webViewLink",
+        });
         res.json({
             success: true,
+            folder: response.data,
         });
     }
     catch (err) {
@@ -34,4 +37,4 @@ exports.default = async (req, res) => {
         res.status(500).json({ error: "Upload failed", details: err.message });
     }
 };
-//# sourceMappingURL=deleteController.js.map
+//# sourceMappingURL=createFolderController.js.map

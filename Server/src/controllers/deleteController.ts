@@ -31,6 +31,10 @@ export default async (req: Request, res: Response) => {
 
             if (permanent) await drive.files.delete({ fileId });
             else await drive.files.update({fileId, requestBody: { trashed: true}});
+
+            res.json({
+              success: true,
+            });
         
     } catch (err: any) {
         console.error("Upload error:", err.message);

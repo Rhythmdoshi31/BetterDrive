@@ -18,9 +18,11 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchFiles = async (): Promise<void> => {
       try {
-        const response: AxiosResponse<FilesResponse> = await axios.get('/api/google/files?type=all&parentId=root&trashed=false');
+        // const response: AxiosResponse<FilesResponse> = await axios.get('/api/google/files?type=all&parentId=root&trashed=false');
         // const response: AxiosResponse<FilesResponse> = await axios.patch('/api/google/files/delete/1aQZdTMNa0M9SB5uM4iXrL1g4c5GTcnon?permanent=true');
         // const response: AxiosResponse<FilesResponse> = await axios.patch('/api/google/files/restore/1ELGmFQZgngOufPBcdyQ-LVersZ5VnoC7');
+        // const response: AxiosResponse<FilesResponse> = await axios.post('/api/google/files/folders');
+        const response: AxiosResponse<FilesResponse> = await axios.get("/api/google/download/1f55SDjTO4I0XfmBdRnJkJ5gskrZuSb6g");
         setFiles(response.data.files || []);
       } catch (error: unknown) {
         console.error('Error fetching files:', error);

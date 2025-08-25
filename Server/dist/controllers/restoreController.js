@@ -7,9 +7,9 @@ exports.default = async (req, res) => {
     try {
         console.log("this chamkaradar");
         const fileId = req.params.fileId;
-        const permanent = req.query.permanent === 'true';
+        const permanent = req.query.permanent === "true";
         if (!fileId)
-            return res.status(400).json({ error: 'File ID Required' });
+            return res.status(400).json({ error: "File ID Required" });
         const userPayload = req.user;
         if (!userPayload) {
             return res.status(401).json({ error: "Unauthorized" });
@@ -22,6 +22,9 @@ exports.default = async (req, res) => {
         }
         const drive = (0, googleDriveClient_1.getDriveClient)(user.googleRefreshToken);
         drive.files.update({ fileId, requestBody: { trashed: false } });
+        res.json({
+            success: true,
+        });
     }
     catch (err) {
         console.error("Upload error:", err.message);

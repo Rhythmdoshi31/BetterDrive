@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const verifyToken = (req, res, next) => {
-    console.log("req.cookies.token");
+    console.log(req.cookies.token);
     const token = req.cookies.token;
     if (!token) {
         res.status(401).json({ error: 'No token provided' });

@@ -8,10 +8,7 @@ const prisma = new PrismaClient();
 export default async (req: Request, res: Response) => {
   try {
     console.log("this chamkaradar");
-    const fileId = req.params.fileId;
-    const permanent = req.query.permanent === "true";
-
-    if (!fileId) return res.status(400).json({ error: "File ID Required" });
+    const folderId = req.query.folderId as string || undefined;
 
     const userPayload = (req as Request & { user?: JWTPayload }).user;
 
@@ -29,10 +26,20 @@ export default async (req: Request, res: Response) => {
 
     const drive = getDriveClient(user.googleRefreshToken);
 
-    drive.files.update({ fileId, requestBody: { trashed: false } });
+    const folderMetadata = {
+      name: req.body.name,
+      mimeType: "application/vnd.google-apps.folder",
+      parents: folderId ? [folderId as string] : undefined,
+    };
+
+    const response = await drive.files.create({
+      requestBody: folderMetadata,
+      fields: "id, name, mimeType, parents, webViewLink",
+    });
 
     res.json({
       success: true,
+      folder: response.data,
     });
   } catch (err: any) {
     console.error("Upload error:", err.message);

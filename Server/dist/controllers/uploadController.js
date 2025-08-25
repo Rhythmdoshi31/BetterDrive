@@ -20,7 +20,7 @@ exports.default = async (req, res) => {
             return res.status(401).json({ error: "No refresh token found" });
         }
         const drive = (0, googleDriveClient_1.getDriveClient)(user.googleRefreshToken);
-        const folderId = req.body.folderId || undefined;
+        const folderId = req.query.folderId || undefined;
         // Since drive needs file as stream..
         const bufferStream = new stream_1.PassThrough();
         bufferStream.end(req.file.buffer);
