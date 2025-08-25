@@ -10,6 +10,8 @@ import renameController from '../controllers/renameController';
 import moveNcopyController from '../controllers/moveNcopyController';
 import downloadController from '../controllers/downloadController';
 import starController from '../controllers/starController';
+import searchController from '../controllers/searchController';
+import storageController from '../controllers/storageController';
 
 const router: Router = express.Router();
 
@@ -17,6 +19,11 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // Get files from Google Drive
 router.get('/files', verifyToken, getController);
+
+router.get('/storage', verifyToken, storageController);
+
+// Search files in Google Drive
+router.get('/files/search', verifyToken, searchController);
 
 // Put files to Google Drive
 // FolderId will be in query params.. (?folderId=abcd)

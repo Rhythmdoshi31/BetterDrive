@@ -11,7 +11,9 @@ Backend --
     Download Files
     Starred Files
 
-TO DO ------------
+Later ------------
 
-    Search Files (C)
-    Sharing / Permissions (B)
+    Sharing / Permissions
+    Search Files
+    Sorting based on modifiedTime, createdTime, name (We have folders and files sorting already)
+    

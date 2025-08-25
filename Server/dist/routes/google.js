@@ -15,10 +15,15 @@ const renameController_1 = __importDefault(require("../controllers/renameControl
 const moveNcopyController_1 = __importDefault(require("../controllers/moveNcopyController"));
 const downloadController_1 = __importDefault(require("../controllers/downloadController"));
 const starController_1 = __importDefault(require("../controllers/starController"));
+const searchController_1 = __importDefault(require("../controllers/searchController"));
+const storageController_1 = __importDefault(require("../controllers/storageController"));
 const router = express_1.default.Router();
 const upload = (0, multer_1.default)({ storage: multer_1.default.memoryStorage() });
 // Get files from Google Drive
 router.get('/files', auth_1.verifyToken, getController_1.default);
+router.get('/storage', auth_1.verifyToken, storageController_1.default);
+// Search files in Google Drive
+router.get('/files/search', auth_1.verifyToken, searchController_1.default);
 // Put files to Google Drive
 // FolderId will be in query params.. (?folderId=abcd)
 router.post("/upload", auth_1.verifyToken, upload.single("file"), uploadController_1.default);

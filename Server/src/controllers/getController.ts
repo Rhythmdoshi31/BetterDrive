@@ -41,10 +41,10 @@ export default async (req: Request, res: Response) => {
 
     const response = await drive.files.list({
       pageSize: 50,
-      fields: 'files(id, name, size, mimeType, modifiedTime, webViewLink)',
+      fields: 'nextPageToken, files(id, name, size, mimeType, modifiedTime, webViewLink)',
       q,
     });
-    res.json({ files: response.data.files });
+    res.json({ files: response.data.files, nextPageToken: response.data.nextPageToken || null });
 
   } catch (error) {
     console.error("Drive API error:", error);
