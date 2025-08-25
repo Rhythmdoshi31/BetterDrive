@@ -21,6 +21,7 @@ exports.default = async (req, res) => {
         const drive = (0, googleDriveClient_1.getDriveClient)(user.googleRefreshToken);
         const parentId = req.query.parentId || 'root';
         const type = req.query.type || 'all';
+        const starred = req.query.starred || 'false';
         let q = `'${parentId}' in parents`;
         if (req.query.trashed === 'true')
             q += ' and trashed = true';
@@ -30,6 +31,8 @@ exports.default = async (req, res) => {
             q += " and mimeType = 'application/vnd.google-apps.folder'";
         else if (type === 'files')
             q += " and mimeType != 'application/vnd.google-apps.folder'";
+        if (starred === "true")
+            q += " and starred = true";
         const response = await drive.files.list({
             pageSize: 50,
             fields: 'files(id, name, size, mimeType, modifiedTime, webViewLink)',

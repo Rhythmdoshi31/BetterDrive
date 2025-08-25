@@ -9,6 +9,7 @@ import createFolderController from '../controllers/createFolderController';
 import renameController from '../controllers/renameController';
 import moveNcopyController from '../controllers/moveNcopyController';
 import downloadController from '../controllers/downloadController';
+import starController from '../controllers/starController';
 
 const router: Router = express.Router();
 
@@ -33,6 +34,8 @@ router.patch("/rename/:id", verifyToken, renameController);
 // Move/Copy folders in Google drive
 router.patch("/move/:fileId", verifyToken, moveNcopyController);
 
+// Mark a file as starred in Google Drive
+router.post("/files/star/:fileId", verifyToken, starController);
 
 // Delete files from Google Drive
 router.patch('/files/delete/:fileId', verifyToken, deleteController);

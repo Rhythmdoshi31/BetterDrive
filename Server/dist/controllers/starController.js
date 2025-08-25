@@ -7,6 +7,11 @@ exports.default = async (req, res) => {
     try {
         console.log("this chamkaradar");
         const fileId = req.params.fileId;
+        const starParams = req.query.star;
+        if (starParams !== "true" && starParams !== "false") {
+            return res.status(400).json({ error: "star must be 'true' or 'false'" });
+        }
+        const star = starParams === "true";
         if (!fileId)
             return res.status(400).json({ error: "File ID Required" });
         const userPayload = req.user;
@@ -20,9 +25,14 @@ exports.default = async (req, res) => {
             return res.status(401).json({ error: "No refresh token found" });
         }
         const drive = (0, googleDriveClient_1.getDriveClient)(user.googleRefreshToken);
-        await drive.files.update({ fileId, requestBody: { trashed: false } });
+        const updatedFileData = await drive.files.update({
+            fileId,
+            requestBody: { starred: star },
+            fields: "id, name, starred",
+        });
         res.json({
             success: true,
+            file: updatedFileData.data,
         });
     }
     catch (err) {
@@ -30,4 +40,4 @@ exports.default = async (req, res) => {
         res.status(500).json({ error: "Upload failed", details: err.message });
     }
 };
-//# sourceMappingURL=restoreController.js.map
+//# sourceMappingURL=starController.js.map

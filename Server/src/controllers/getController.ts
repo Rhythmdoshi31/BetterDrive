@@ -28,6 +28,7 @@ export default async (req: Request, res: Response) => {
 
     const parentId = req.query.parentId as string || 'root';
     const type = req.query.type as string || 'all';
+    const starred = req.query.starred as string || 'false';
     
     let q = `'${parentId}' in parents`;
     if (req.query.trashed === 'true') q += ' and trashed = true';
@@ -35,6 +36,8 @@ export default async (req: Request, res: Response) => {
     
     if (type === 'folders') q += " and mimeType = 'application/vnd.google-apps.folder'";
     else if (type === 'files') q += " and mimeType != 'application/vnd.google-apps.folder'";
+
+    if (starred === "true") q += " and starred = true";
 
     const response = await drive.files.list({
       pageSize: 50,
