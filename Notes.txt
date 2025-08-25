@@ -9,9 +9,9 @@ Backend --
     Rename done
     Move and Copy done
     Download Files
+    Starred Files
 
 TO DO ------------
 
     Search Files (C)
     Sharing / Permissions (B)
-    Starred Files (D)

@@ -14,15 +14,16 @@ const Dashboard: React.FC = () => {
   const [uploading, setUploading] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   
-  // The type (folders|files|all) and parentId and trashed (for bin) has to be passed in params..
+  // The type (folders|files|all) and parentId and trashed (for bin) has to be passed in params and also (&starred=true)..
   useEffect(() => {
     const fetchFiles = async (): Promise<void> => {
       try {
-        // const response: AxiosResponse<FilesResponse> = await axios.get('/api/google/files?type=all&parentId=root&trashed=false');
+        // const response: AxiosResponse<FilesResponse> = await axios.get('/api/google/files?type=folders&parentId=root&trashed=false');
         // const response: AxiosResponse<FilesResponse> = await axios.patch('/api/google/files/delete/1aQZdTMNa0M9SB5uM4iXrL1g4c5GTcnon?permanent=true');
         // const response: AxiosResponse<FilesResponse> = await axios.patch('/api/google/files/restore/1ELGmFQZgngOufPBcdyQ-LVersZ5VnoC7');
         // const response: AxiosResponse<FilesResponse> = await axios.post('/api/google/files/folders');
-        const response: AxiosResponse<FilesResponse> = await axios.get("/api/google/download/1f55SDjTO4I0XfmBdRnJkJ5gskrZuSb6g");
+        // const response: AxiosResponse<FilesResponse> = await axios.get("/api/google/download/1f55SDjTO4I0XfmBdRnJkJ5gskrZuSb6g");
+        const response: AxiosResponse<FilesResponse> = await axios.post("/api/google/files/star/16SkGWlaX9U_KhuF-MYxjShW-pHTGM8ix");
         setFiles(response.data.files || []);
       } catch (error: unknown) {
         console.error('Error fetching files:', error);
