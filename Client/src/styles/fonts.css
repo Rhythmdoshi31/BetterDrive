@@ -1,0 +1,106 @@
+@font-face {
+  font-family: 'Alegreya SC';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../assets/fonts/AlegreyaSC-Regular.woff2') format('truetype');
+  font-display: swap;
+}
+
+/* Alegreya SC Italic */
+@font-face {
+  font-family: 'Alegreya SC';
+  font-style: italic;
+  font-weight: 400;
+  src: url('../assets/fonts/AlegreyaSC-Italic.woff2') format('truetype');
+  font-display: swap;
+}
+
+/*/* Antique Olive Roman (Regular) */
+@font-face {
+  font-family: 'Antique Olive';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../assets/fonts/Antique-Olive-Std-Roman_3869.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Antique Olive Bold */
+@font-face {
+  font-family: 'Antique Olive';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../assets/fonts/Antique-Olive-Std-Bold_3863.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Antique Olive Italic */
+@font-face {
+  font-family: 'Antique Olive';
+  font-style: italic;
+  font-weight: 400;
+  src: url('../assets/fonts/Antique-Olive-Std-Italic_3865.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Antique Olive Bold Condensed */
+@font-face {
+  font-family: 'Antique Olive Condensed';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../assets/fonts/Antique-Olive-Std-Bold-Condensed_3862.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* ===== OSWALD FONT ===== */
+/* Oswald Light */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../assets/fonts/Oswald-Light.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Oswald Regular */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../assets/fonts/Oswald-Regular.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Oswald Regular Italic */
+@font-face {
+  font-family: 'Oswald';
+  font-style: italic;
+  font-weight: 400;
+  src: url('../assets/fonts/Oswald-RegularItalic.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Oswald DemiBold */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../assets/fonts/Oswald-DemiBold.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Oswald DemiBold Italic */
+@font-face {
+  font-family: 'Oswald';
+  font-style: italic;
+  font-weight: 600;
+  src: url('../assets/fonts/Oswald-Demi-BoldItalic.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'fkGrotesk';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../assets/fonts/FKGroteskTrial-Regular.woff') format('woff');
+  font-display: swap;
+}

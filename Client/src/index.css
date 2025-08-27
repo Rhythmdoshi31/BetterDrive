@@ -1,9 +1,27 @@
+@import './styles/fonts.css';
 @import "tailwindcss";
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer utilities {
+  .font-alegreya-sc {
+    font-family: 'Alegreya SC', serif;
+  }
+  .font-antique-olive {
+    font-family: 'Antique Olive', sans-serif;
+  }
+  
+  .font-antique-olive-condensed {
+    font-family: 'Antique Olive Condensed', sans-serif;
+  }
+
+  .font-oswald {
+    font-family: 'Oswald', sans-serif;
+  }
+
+  .font-fkGrotesk {
+    font-family: 'fkGroTesk', sans-serif;
+  }
 }
 
 html, body, #root {

@@ -9,18 +9,18 @@ const axios_1 = __importDefault(require("axios"));
 const handleSignIn_1 = require("../utils/handleSignIn");
 const router = express_1.default.Router();
 // Initiate Google OAuth - Updated with Drive scopes
-router.get('/google', (req, res) => {
+router.get("/google", (req, res) => {
     const scopes = [
-        'profile',
-        'email',
-        'https://www.googleapis.com/auth/drive',
-        'https://www.googleapis.com/auth/drive.metadata.readonly'
+        "profile",
+        "email",
+        "https://www.googleapis.com/auth/drive",
+        "https://www.googleapis.com/auth/drive.metadata.readonly",
     ];
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=http://localhost:3000/auth/google/callback&response_type=code&scope=${encodeURIComponent(scopes.join(' '))}&access_type=offline&prompt=consent`;
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=http://localhost:3000/auth/google/callback&response_type=code&scope=${encodeURIComponent(scopes.join(" "))}&access_type=offline&prompt=consent`;
     res.redirect(authUrl);
 });
 // Google OAuth callback - Manual token exchange
-router.get('/google/callback', async (req, res) => {
+router.get("/google/callback", async (req, res) => {
     try {
         const code = req.query.code;
         if (!code) {
@@ -56,28 +56,40 @@ router.get('/google/callback', async (req, res) => {
         const existingUser = await (0, handleSignIn_1.handleGoogleSignIn)(userData);
         if (!existingUser) {
             console.error("Failed to sign in user");
-            return res.redirect('http://localhost:3000/error');
+            return res.redirect("http://localhost:3000/error");
         }
         // Generate JWT for session management
-        const token = jsonwebtoken_1.default.sign({ userId: existingUser.id, email: existingUser.email }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        const token = jsonwebtoken_1.default.sign({ userId: existingUser.id, email: existingUser.email }, process.env.JWT_SECRET, { expiresIn: "1d" });
         // Set JWT as HTTP-only cookie
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        });
+        const minimalUserData = {
+            name: userResponse.data.name,
+            image: userResponse.data.picture,
+            email: userResponse.data.email, // For display purposes
+            isAuthenticated: true,
+        };
+        // Set minimal user data cookie
+        res.cookie("user_data", JSON.stringify(minimalUserData), {
+            httpOnly: false, // Frontend can read
+            secure: process.env.NODE_ENV === "production",
             maxAge: 24 * 60 * 60 * 1000, // 24 hours
         });
         console.log("User signed in:", existingUser.email);
-        res.redirect('http://localhost:5173/dashboard');
+        res.redirect("http://localhost:5173/dashboard");
     }
     catch (error) {
         console.error("Google OAuth Error:", error.response?.data || error.message);
-        res.redirect('http://localhost:3000/error');
+        res.redirect("http://localhost:3000/error");
     }
 });
 // Logout route
-router.post('/logout', (req, res) => {
-    res.clearCookie('token');
-    res.json({ message: 'Logged out successfully' });
+router.post("/logout", (req, res) => {
+    res.clearCookie("token");
+    res.json({ message: "Logged out successfully" });
 });
 exports.default = router;
 //# sourceMappingURL=auth.js.map

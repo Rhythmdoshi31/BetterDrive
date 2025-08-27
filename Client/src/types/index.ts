@@ -4,6 +4,8 @@ export interface DriveFile {
   size?: string;
   mimeType: string;
   modifiedTime: string;
+  hasThumbnail: boolean;
+  thumbnailLink?: string;
 }
 
 export interface FilesResponse {

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import type { AxiosResponse } from "axios";
 import type { DriveFile, FilesResponse } from "../types";
+import { NavbarLogo } from "../components/ui/resizable-navbar";
+import Toggle from "../components/toggleDarkMode";
+import SearchComponent from "../components/ui/SearchBar";
 
 interface StorageQuota {
   used: number;
@@ -9,7 +12,6 @@ interface StorageQuota {
   usedInTrash: number;
   limit: number;
 }
-
 
 // Configure axios to include credentials (cookies) and point to backend
 axios.defaults.withCredentials = true;
@@ -91,15 +93,38 @@ const Dashboard: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
+  const handleSearch = (query: string) => {
+    console.log("Search query:", query);
+    // Implement your search logic here
+  };
+
   return (
-    <div>
-      <div>
+    <div className="font-fkGrotesk">
+      <div className="h-16 w-full flex items-center justify-between px-12 dark:bg-black ">
+        <div className="flex">
+          <NavbarLogo />
+        <div className="px-4">
+          <SearchComponent
+            placeholder="Search your Google Drive files..."
+            onSearch={handleSearch}
+            className="mx-auto"
+          />
+        </div>
+        </div>
+        <Toggle />
+      </div>
+      <div className="bg-black text-white">
         <h3>Your Drive Files</h3>
         {files.map((file: DriveFile) => (
           <div key={file.id}>
             <h4>{file.name}</h4>
             <p>Size: {file.size} bytes</p>
             <p>Modified: {new Date(file.modifiedTime).toLocaleDateString()}</p>
+            {file.hasThumbnail && file.thumbnailLink ? (
+              <img src={file.thumbnailLink} alt={file.name} />
+            ) : (
+              <h1>{file.name} - Thumbnail not available</h1>
+            )}
           </div>
         ))}
       </div>
