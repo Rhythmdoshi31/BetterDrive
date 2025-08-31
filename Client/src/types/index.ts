@@ -11,3 +11,11 @@ export interface DriveFile {
 export interface FilesResponse {
   files: DriveFile[];
 }
+
+
+interface User {
+  name: string;
+  email: string;
+  image: string;
+  isAuthenticated: boolean;
+}
