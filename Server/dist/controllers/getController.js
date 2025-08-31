@@ -37,6 +37,7 @@ exports.default = async (req, res) => {
             pageSize: 50,
             fields: 'nextPageToken, files(id, name, size, mimeType, modifiedTime, webViewLink, hasThumbnail, thumbnailLink)',
             q,
+            orderBy: 'modifiedTime desc',
         });
         res.json({ files: response.data.files, nextPageToken: response.data.nextPageToken || null });
     }

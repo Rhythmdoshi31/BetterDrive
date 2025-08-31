@@ -12,6 +12,8 @@ import downloadController from '../controllers/downloadController';
 import starController from '../controllers/starController';
 import searchController from '../controllers/searchController';
 import storageController from '../controllers/storageController';
+import dashboardController from '../controllers/dashboardController';
+import thumbnailController from '../controllers/thumbnailController';
 
 const router: Router = express.Router();
 
@@ -19,6 +21,12 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // Get files from Google Drive
 router.get('/files', verifyToken, getController);
+
+// This sends dashboard content & stored them in Redis with previews as urls of another route..
+router.get('/dashboard/files', verifyToken, dashboardController);
+
+// This gets the image buffer from Redis and sends it as jpeg in response
+router.get("/dashboard/:userId/:fileId", thumbnailController);
 
 router.get('/storage', verifyToken, storageController);
 

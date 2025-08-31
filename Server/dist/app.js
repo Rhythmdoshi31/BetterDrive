@@ -14,6 +14,7 @@ require("./lib/passport");
 // Import routes
 const auth_1 = __importDefault(require("./routes/auth"));
 const google_1 = __importDefault(require("./routes/google"));
+const redis_1 = require("./lib/redis");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 // Middleware
@@ -39,7 +40,19 @@ app.use(passport_1.default.session());
 app.use('/auth', auth_1.default);
 app.use('/api/google', google_1.default);
 const PORT = parseInt(process.env.PORT || '3000');
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+const startServer = async () => {
+    try {
+        // Connect to Redis Cloud
+        await (0, redis_1.initRedis)();
+        console.log('🚀 Redis Cloud Connected');
+        app.listen(PORT, () => {
+            console.log(`🔥 Server running on port ${PORT}`);
+        });
+    }
+    catch (error) {
+        console.error('❌ Failed to connect to Redis Cloud:', error);
+        process.exit(1);
+    }
+};
+startServer();
 //# sourceMappingURL=app.js.map

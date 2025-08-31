@@ -11,6 +11,7 @@ import './lib/passport';
 // Import routes
 import authRoutes from './routes/auth';
 import googleRoutes from './routes/google';
+import { initRedis } from './lib/redis';
 
 dotenv.config();
 
@@ -42,9 +43,21 @@ app.use(passport.session());
 app.use('/auth', authRoutes);
 app.use('/api/google', googleRoutes);
 
-
 const PORT: number = parseInt(process.env.PORT || '3000');
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const startServer = async (): Promise<void> => {
+  try {
+    // Connect to Redis Cloud
+    await initRedis();
+    console.log('🚀 Redis Cloud Connected');
+    
+    app.listen(PORT, () => {
+      console.log(`🔥 Server running on port ${PORT}`);
+    });
+  } catch (error: unknown) {
+    console.error('❌ Failed to connect to Redis Cloud:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
