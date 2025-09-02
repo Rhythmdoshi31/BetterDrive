@@ -13,9 +13,18 @@ export interface FilesResponse {
 }
 
 
-interface User {
+export interface User {
   name: string;
   email: string;
   image: string;
   isAuthenticated: boolean;
+}
+
+export interface DashboardResponse {
+  top3: DriveFile[];
+  top7Previews: DriveFile[];
+  allFiles: DriveFile[];
+  totalCount: number;
+  hasNextPage: boolean;
+  nextPageToken?: string;
 }
