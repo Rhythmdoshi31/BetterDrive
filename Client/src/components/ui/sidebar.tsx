@@ -83,7 +83,7 @@ export const CleanSidebar: React.FC<CleanSidebarProps> = ({
     <div 
       ref={containerRef}
       className={cn(
-        "fixed md:left-4 lg:left-9 top-20 z-40 flex flex-col items-center",
+        "fixed md:left-4 lg:left-9 top-[50%] -translate-y-[50%] z-40 flex flex-col items-center",
         className
       )}
       onMouseMove={handleMouseMove}

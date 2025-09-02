@@ -17,10 +17,17 @@ const downloadController_1 = __importDefault(require("../controllers/downloadCon
 const starController_1 = __importDefault(require("../controllers/starController"));
 const searchController_1 = __importDefault(require("../controllers/searchController"));
 const storageController_1 = __importDefault(require("../controllers/storageController"));
+const dashboardController_1 = __importDefault(require("../controllers/dashboardController"));
+const thumbnailController_1 = __importDefault(require("../controllers/thumbnailController"));
+const redis_1 = require("../lib/redis");
 const router = express_1.default.Router();
 const upload = (0, multer_1.default)({ storage: multer_1.default.memoryStorage() });
 // Get files from Google Drive
 router.get('/files', auth_1.verifyToken, getController_1.default);
+// This sends dashboard content & stored them in Redis with previews as urls of another route..
+router.get('/dashboard/files', auth_1.verifyToken, dashboardController_1.default);
+// This gets the image buffer from Redis and sends it as jpeg in response
+router.get("/thumbnail/:userId/:fileId", thumbnailController_1.default);
 router.get('/storage', auth_1.verifyToken, storageController_1.default);
 // Search files in Google Drive
 router.get('/files/search', auth_1.verifyToken, searchController_1.default);
@@ -41,5 +48,17 @@ router.post("/files/star/:fileId", auth_1.verifyToken, starController_1.default)
 router.patch('/files/delete/:fileId', auth_1.verifyToken, deleteController_1.default);
 // Restore files from Bin
 router.patch('/files/restore/:fileId', auth_1.verifyToken, restoreController_1.default);
+// Add this route temporarily to your google routes
+router.get('/debug/clear-file-cache/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const cacheKey = `dashboard_files_${userId}`;
+        await redis_1.redisClient.del(cacheKey);
+        res.json({ message: 'File cache cleared successfully' });
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 exports.default = router;
 //# sourceMappingURL=google.js.map

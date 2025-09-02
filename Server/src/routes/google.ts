@@ -14,6 +14,7 @@ import searchController from '../controllers/searchController';
 import storageController from '../controllers/storageController';
 import dashboardController from '../controllers/dashboardController';
 import thumbnailController from '../controllers/thumbnailController';
+import { redisClient } from '../lib/redis';
 
 const router: Router = express.Router();
 
@@ -26,7 +27,7 @@ router.get('/files', verifyToken, getController);
 router.get('/dashboard/files', verifyToken, dashboardController);
 
 // This gets the image buffer from Redis and sends it as jpeg in response
-router.get("/dashboard/:userId/:fileId", thumbnailController);
+router.get("/thumbnail/:userId/:fileId", thumbnailController);
 
 router.get('/storage', verifyToken, storageController);
 
@@ -57,5 +58,19 @@ router.patch('/files/delete/:fileId', verifyToken, deleteController);
 
 // Restore files from Bin
 router.patch('/files/restore/:fileId', verifyToken, restoreController);
+
+// Add this route temporarily to your google routes
+router.get('/debug/clear-file-cache/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const cacheKey = `dashboard_files_${userId}`;
+    
+    await redisClient.del(cacheKey);
+    
+    res.json({ message: 'File cache cleared successfully' });
+  } catch (error:any) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 export default router;

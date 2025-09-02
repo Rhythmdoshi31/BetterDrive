@@ -20,7 +20,7 @@
   }
 
   .font-fkGrotesk {
-    font-family: 'fkGroTesk', sans-serif;
+    font-family: 'fkG', sans-serif;
   }
 }
 
@@ -29,4 +29,12 @@ html, body, #root {
   padding: 0;
   height: 100%;
   width: 100%;
+}
+.scrollbar-hidden {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
