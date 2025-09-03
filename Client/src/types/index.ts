@@ -6,6 +6,8 @@ export interface DriveFile {
   modifiedTime: string;
   hasThumbnail: boolean;
   thumbnailLink?: string;
+  starred: boolean;
+  webViewLink: string;
 }
 
 export interface FilesResponse {

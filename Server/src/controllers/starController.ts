@@ -40,7 +40,7 @@ export default async (req: Request, res: Response) => {
       requestBody: { starred: star },
       fields: "id, name, starred",
     });
-
+    console.log("yha tak aye the");
     res.json({
       success: true,
       file: updatedFileData.data,

@@ -16,9 +16,9 @@ import dashboardController from '../controllers/dashboardController';
 import thumbnailController from '../controllers/thumbnailController';
 import { redisClient } from '../lib/redis';
 
-const router: Router = express.Router();
+import { upload } from '../middleware/multer';
 
-const upload = multer({ storage: multer.memoryStorage() });
+const router: Router = express.Router();
 
 // Get files from Google Drive
 router.get('/files', verifyToken, getController);
@@ -36,7 +36,23 @@ router.get('/files/search', verifyToken, searchController);
 
 // Put files to Google Drive
 // FolderId will be in query params.. (?folderId=abcd)
-router.post("/upload", verifyToken, upload.single("file"), uploadController);
+
+router.post('/upload', verifyToken, (req, res, next) => {
+  upload.single('file')(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ 
+          error: 'File too large', 
+          message: 'File size cannot exceed 500MB' 
+        });
+      }
+      return res.status(400).json({ error: err.message });
+    } else if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+    next(); // Continue to your upload handler
+  });
+}, uploadController);
 
 // Download files from Google drive
 router.get("/download/:fileId", verifyToken, downloadController)
@@ -51,7 +67,7 @@ router.patch("/rename/:id", verifyToken, renameController);
 router.patch("/move/:fileId", verifyToken, moveNcopyController);
 
 // Mark a file as starred in Google Drive
-router.post("/files/star/:fileId", verifyToken, starController);
+router.patch("/files/star/:fileId", verifyToken, starController);
 
 // Delete files from Google Drive
 router.patch('/files/delete/:fileId', verifyToken, deleteController);

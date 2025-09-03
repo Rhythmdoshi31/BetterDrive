@@ -1,8 +1,10 @@
 "use client";
 import { cn } from "../../lib/utils";
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { Links } from "../../types/sidebar-types";
+import { useLocation } from "react-router-dom";
+import FileUpload from "../FileUpload"; // Import the FileUpload component
 
 interface CleanSidebarProps {
   links: Links[];
@@ -17,13 +19,45 @@ export const CleanSidebar: React.FC<CleanSidebarProps> = ({
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [hoverOrigin, setHoverOrigin] = useState<'top' | 'bottom' | 'center'>('center');
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false); // NEW: Upload modal state
   const prevMousePosition = useRef({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Get current route
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  // Find active index with dashboard as fallback
+  const activeIndex = useMemo(() => {
+    // First, try to find exact match
+    let index = links.findIndex(link => {
+      if (link.href === pathname) return true;
+      if (pathname === '/dashboard' && link.href === '/dashboard') return true;
+      if (pathname === '/' && link.href === '/dashboard') return true;
+      return false;
+    });
+
+    // If no match found, default to dashboard (My Drive)
+    if (index === -1) {
+      const dashboardIndex = links.findIndex(link => link.href === '/dashboard' || link.href === '/');
+      index = dashboardIndex !== -1 ? dashboardIndex : 0; // Fallback to first item if no dashboard found
+    }
+
+    return index;
+  }, [pathname, links]);
+
   // Icon dimensions
-  const iconHeight = 40; // Height of each icon
-  const iconGap = 12; // Gap between icons
-  const stripStartY = 70; // Starting position after upload button
+  const iconHeight = 40;
+  const iconGap = 12;
+  const stripStartY = 25;
+
+  // NEW: Handle upload completion
+  const handleUploadComplete = (files: File[]) => {
+    console.log('Files uploaded successfully:', files);
+    // Here you can refresh your file list or update your UI
+    // For example: fetchFiles() or updateFileList()
+    setIsUploadModalOpen(false); // Close modal after successful upload
+  };
 
   const detectHoverDirection = useCallback((iconIndex: number, mouseY: number) => {
     if (!containerRef.current) return 'center';
@@ -35,15 +69,12 @@ export const CleanSidebar: React.FC<CleanSidebarProps> = ({
     const relativeMouseY = mouseY - rect.top;
     const prevRelativeY = prevMousePosition.current.y - rect.top;
 
-    // If mouse came from above the icon
     if (prevRelativeY < iconTopY && relativeMouseY >= iconTopY) {
       return 'top';
     }
-    // If mouse came from below the icon  
     else if (prevRelativeY > iconBottomY && relativeMouseY <= iconBottomY) {
       return 'bottom';
     }
-    // Default: from left/right or direct hover
     else {
       return 'center';
     }
@@ -54,10 +85,11 @@ export const CleanSidebar: React.FC<CleanSidebarProps> = ({
   }, []);
 
   const getStripAnimation = (origin: 'top' | 'bottom' | 'center', iconIndex: number) => {
-    const iconCenterY = stripStartY + (iconIndex * (iconHeight + iconGap)) + (iconHeight / 2);
-    const iconTopY = iconCenterY - (iconHeight / 2);
-    const iconBottomY = iconCenterY + (iconHeight / 2);
-    const stripHeight = iconHeight; // Only cover the icon height
+    // Fixed hover strip positioning - aligned with active strip
+    const iconTopY = stripStartY + (iconIndex * (iconHeight + iconGap)) + 15; // Same as active strip
+    const iconCenterY = iconTopY + (iconHeight / 2);
+    const iconBottomY = iconTopY + iconHeight;
+    const stripHeight = iconHeight;
 
     switch (origin) {
       case 'top':
@@ -80,75 +112,107 @@ export const CleanSidebar: React.FC<CleanSidebarProps> = ({
   };
 
   return (
-    <div 
-      ref={containerRef}
-      className={cn(
-        "fixed md:left-4 lg:left-9 top-[50%] -translate-y-[50%] z-40 flex flex-col items-center",
-        className
-      )}
-      onMouseMove={handleMouseMove}
-    >
-      <div className="relative">
-        <div className="relative z-10 mb-0">
-          <CleanSidebarItem link={uploadLink} isUpload />
-        </div>
-
-        <div 
-          className="bg-white dark:bg-neutral-950/80 rounded-b-full border-[1px] border-gray-200 dark:border-neutral-800 flex flex-col items-center gap-3 -mt-7 pt-10 pb-4 px-2 rdelative md:w-10 lg:w-14"
-          style={{ 
-            minHeight: 'calc(70vh - 120px + 1vh)'
-          }}>
-          
-          {/* Blue Strip - Only covers the hovered icon */}
-          <AnimatePresence>
-            {hoveredIndex !== null && (
-              <motion.div
-                className="absolute left-0 w-1 bg-blue-600 dark:bg-blue-400 rounded-r-xs"
-                {...getStripAnimation(hoverOrigin, hoveredIndex)}
-                exit={{ 
-                  height: 0,
-                  top: stripStartY + (hoveredIndex * (iconHeight + iconGap)) + (iconHeight / 2)
-                }}
-                transition={{ 
-                  duration: 0.2, 
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-              />
-            )}
-          </AnimatePresence>
-          
-          {links.map((link, idx) => (
+    <>
+      <div 
+        ref={containerRef}
+        className={cn(
+          "fixed md:left-4 lg:left-9 top-[50%] -translate-y-[50%] z-40 flex flex-col items-center",
+          className
+        )}
+        onMouseMove={handleMouseMove}
+      >
+        <div className="relative">
+          <div className="relative z-10 mb-0">
             <CleanSidebarItem 
-              key={idx} 
-              link={link} 
-              onHover={(mouseY) => {
-                const origin = detectHoverDirection(idx, mouseY);
-                setHoverOrigin(origin);
-                setHoveredIndex(idx);
-              }}
-              onLeave={() => setHoveredIndex(null)}
-              index={idx}
+              link={uploadLink} 
+              isUpload 
+              onUploadClick={() => setIsUploadModalOpen(true)} // NEW: Pass upload handler
             />
-          ))}
+          </div>
+
+          <div 
+            className="bg-white dark:bg-neutral-950/80 rounded-b-full border-[1px] border-gray-200 dark:border-neutral-800 flex flex-col items-center gap-3 -mt-7 pt-10 pb-4 px-2 relative md:w-10 lg:w-14"
+            style={{ 
+              minHeight: 'calc(70vh - 120px + 1vh)'
+            }}>
+            
+            {/* Active Strip - Always visible (defaults to dashboard if no match) */}
+            <motion.div
+              className="absolute left-0 w-1 bg-blue-600 dark:bg-blue-400 rounded-r-xs z-10"
+              initial={false}
+              animate={{ 
+                height: iconHeight,
+                top: stripStartY + (activeIndex * (iconHeight + iconGap)) + 15
+              }}
+              transition={{ 
+                duration: 0.3, 
+                ease: [0.25, 0.46, 0.45, 0.94]
+              }}
+            />
+            
+            {/* Hover Strip - Only shows on hover when not the active page */}
+            <AnimatePresence>
+              {hoveredIndex !== null && hoveredIndex !== activeIndex && (
+                <motion.div
+                  className="absolute left-0 w-1 bg-blue-500/60 dark:bg-blue-300/60 rounded-r-xs"
+                  {...getStripAnimation(hoverOrigin, hoveredIndex)}
+                  exit={{ 
+                    height: 0,
+                    top: stripStartY + (hoveredIndex * (iconHeight + iconGap)) + 15 + (iconHeight / 2)
+                  }}
+                  transition={{ 
+                    duration: 0.2, 
+                    ease: [0.25, 0.46, 0.45, 0.94]
+                  }}
+                />
+              )}
+            </AnimatePresence>
+            
+            {links.map((link, idx) => (
+              <CleanSidebarItem 
+                key={idx} 
+                link={link}
+                isActive={idx === activeIndex}
+                onHover={(mouseY) => {
+                  const origin = detectHoverDirection(idx, mouseY);
+                  setHoverOrigin(origin);
+                  setHoveredIndex(idx);
+                }}
+                onLeave={() => setHoveredIndex(null)}
+                index={idx}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* NEW: FileUpload Modal */}
+      <FileUpload
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onUploadComplete={handleUploadComplete}
+      />
+    </>
   );
 };
 
 interface CleanSidebarItemProps {
   link: Links;
   isUpload?: boolean;
+  isActive?: boolean;
   onHover?: (mouseY: number) => void;
   onLeave?: () => void;
   index?: number;
+  onUploadClick?: () => void; // NEW: Upload click handler prop
 }
 
 const CleanSidebarItem: React.FC<CleanSidebarItemProps> = ({ 
   link, 
   isUpload = false,
+  isActive = false,
   onHover,
   onLeave,
+  onUploadClick, // NEW: Destructure upload handler
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -162,11 +226,17 @@ const CleanSidebarItem: React.FC<CleanSidebarItemProps> = ({
     onLeave?.();
   };
 
+  // NEW: Handle upload button click
+  const handleUploadClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation
+    onUploadClick?.(); // Open upload modal
+  };
+
   if (isUpload) {
     return (
       <div className="relative flex justify-center">
-        <a
-          href={link.href}
+        <button // CHANGED: From 'a' to 'button' and added click handler
+          onClick={handleUploadClick} 
           className="flex items-center justify-center w-10 lg:w-14 h-10 lg:h-14 bg-green-600 hover:bg-green-700 rounded-full transition-all duration-200 shadow-lg group"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
@@ -189,7 +259,7 @@ const CleanSidebarItem: React.FC<CleanSidebarItemProps> = ({
               </motion.div>
             )}
           </AnimatePresence>
-        </a>
+        </button>
       </div>
     );
   }
@@ -198,13 +268,18 @@ const CleanSidebarItem: React.FC<CleanSidebarItemProps> = ({
     <div className="relative flex justify-center">
       <a
         href={link.href}
-        className="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 ease-in-out relative group hover:bg-blue-50 dark:hover:bg-blue-900/20"
+        className={cn(
+          "flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 ease-in-out relative group",
+          isActive 
+            ? "bg-blue-50 dark:bg-blue-900/20" 
+            : "hover:bg-blue-50 dark:hover:bg-blue-900/20"
+        )}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
         <div className={cn(
           "transition-all duration-300 ease-in-out group-hover:scale-110",
-          isHovered 
+          isActive || isHovered 
             ? "text-blue-600 dark:text-blue-400" 
             : "text-gray-600 dark:text-gray-400"
         )}>

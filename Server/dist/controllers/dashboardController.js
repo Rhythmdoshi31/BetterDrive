@@ -68,7 +68,7 @@ exports.default = async (req, res) => {
                 q: "trashed = false",
                 orderBy: "modifiedTime desc",
                 pageSize: limit,
-                fields: "nextPageToken, files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size)",
+                fields: "nextPageToken, files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size, starred)",
             });
             const allFiles = paginatedResponse.data.files;
             const nextPageToken = paginatedResponse.data.nextPageToken;
@@ -89,7 +89,7 @@ exports.default = async (req, res) => {
                 orderBy: "modifiedTime desc",
                 pageSize: limit,
                 pageToken: pageToken,
-                fields: "nextPageToken, files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size)",
+                fields: "nextPageToken, files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size, starred)",
             });
             const allFiles = paginatedResponse.data.files;
             const nextPageToken = paginatedResponse.data.nextPageToken;

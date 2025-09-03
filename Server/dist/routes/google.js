@@ -20,8 +20,8 @@ const storageController_1 = __importDefault(require("../controllers/storageContr
 const dashboardController_1 = __importDefault(require("../controllers/dashboardController"));
 const thumbnailController_1 = __importDefault(require("../controllers/thumbnailController"));
 const redis_1 = require("../lib/redis");
+const multer_2 = require("../middleware/multer");
 const router = express_1.default.Router();
-const upload = (0, multer_1.default)({ storage: multer_1.default.memoryStorage() });
 // Get files from Google Drive
 router.get('/files', auth_1.verifyToken, getController_1.default);
 // This sends dashboard content & stored them in Redis with previews as urls of another route..
@@ -33,7 +33,23 @@ router.get('/storage', auth_1.verifyToken, storageController_1.default);
 router.get('/files/search', auth_1.verifyToken, searchController_1.default);
 // Put files to Google Drive
 // FolderId will be in query params.. (?folderId=abcd)
-router.post("/upload", auth_1.verifyToken, upload.single("file"), uploadController_1.default);
+router.post('/upload', auth_1.verifyToken, (req, res, next) => {
+    multer_2.upload.single('file')(req, res, (err) => {
+        if (err instanceof multer_1.default.MulterError) {
+            if (err.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).json({
+                    error: 'File too large',
+                    message: 'File size cannot exceed 500MB'
+                });
+            }
+            return res.status(400).json({ error: err.message });
+        }
+        else if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+        next(); // Continue to your upload handler
+    });
+}, uploadController_1.default);
 // Download files from Google drive
 router.get("/download/:fileId", auth_1.verifyToken, downloadController_1.default);
 // Create folders in Google Drive
@@ -43,7 +59,7 @@ router.patch("/rename/:id", auth_1.verifyToken, renameController_1.default);
 // Move/Copy folders in Google drive
 router.patch("/move/:fileId", auth_1.verifyToken, moveNcopyController_1.default);
 // Mark a file as starred in Google Drive
-router.post("/files/star/:fileId", auth_1.verifyToken, starController_1.default);
+router.patch("/files/star/:fileId", auth_1.verifyToken, starController_1.default);
 // Delete files from Google Drive
 router.patch('/files/delete/:fileId', auth_1.verifyToken, deleteController_1.default);
 // Restore files from Bin

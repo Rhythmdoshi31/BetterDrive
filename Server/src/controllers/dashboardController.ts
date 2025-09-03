@@ -12,6 +12,7 @@ interface DriveFile {
   modifiedTime: string;
   size: string;
   webViewLink: string;
+  starred: boolean;
 }
 
 interface DashboardResponse {
@@ -115,7 +116,7 @@ export default async (req: Request, res: Response): Promise<void> => {
         q: "trashed = false",
         orderBy: "modifiedTime desc",
         pageSize: limit,
-        fields: "nextPageToken, files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size)",
+        fields: "nextPageToken, files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size, starred)",
       });
 
       const allFiles = paginatedResponse.data.files as DriveFile[];
@@ -138,7 +139,7 @@ export default async (req: Request, res: Response): Promise<void> => {
         orderBy: "modifiedTime desc",
         pageSize: limit,
         pageToken: pageToken,
-        fields: "nextPageToken, files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size)",
+        fields: "nextPageToken, files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size, starred)",
       });
 
       const allFiles = paginatedResponse.data.files as DriveFile[];

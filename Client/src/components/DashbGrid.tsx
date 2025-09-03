@@ -37,7 +37,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
   return (
     <div className="grid grid-cols-[30%_70%] gap-4 max-h-[35vh] pt-4">
       {/* Left Grid - 30% */}
-      <div className="bg-gray-100 dark:bg-neutral-900/50 md:p-3 lg:p-4 rounded-lg">
+      <div className="bg-gray-100 dark:bg-neutral-900/20 md:p-3 lg:p-4 rounded-lg">
         <div className="flex items-center justify-between">
           <h1 className="font-antique-olive text-white md:text-xl lg:text-2xl tracking-wide pt-1">
             My Drive
@@ -77,7 +77,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
       </div>
 
       {/* Right Grid - 70% */}
-      <div className="bg-gray-100 dark:bg-neutral-900/50 p-4 pt-3 pb-6 rounded-lg shadow-sm">
+      <div className="bg-gray-100 dark:bg-neutral-900/20 p-4 pt-3 pb-6 rounded-lg shadow-sm">
         <h1 className="font-antique-olive text-white text-right md:text-xl lg:text-2xl tracking-wide pr-2 mb-3">
           Recent Files
         </h1>
@@ -105,7 +105,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
               >
                 {/* Image Container */}
                 <div className="p-2 pb-0">
-                  <div className="w-full h-34 rounded-sm overflow-hidden bg-gray-100">
+                  <div className="w-full h-34 rounded-sm overflow-hidden bg-gray-100 dark:bg-neutral-700 dark:text-gray-200">
                     {file.thumbnailLink ? (
                       <img
                         src={file.thumbnailLink}

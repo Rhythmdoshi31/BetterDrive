@@ -1,1 +1,1 @@
-{"version":3,"file":"google.d.ts","sourceRoot":"","sources":["../../src/routes/google.ts"],"names":[],"mappings":"AAAA,OAAgB,EAAE,MAAM,EAAE,MAAM,SAAS,CAAC;AAkB1C,QAAA,MAAM,MAAM,EAAE,MAAyB,CAAC;AAyDxC,eAAe,MAAM,CAAC"}
+{"version":3,"file":"google.d.ts","sourceRoot":"","sources":["../../src/routes/google.ts"],"names":[],"mappings":"AAAA,OAAgB,EAAE,MAAM,EAAE,MAAM,SAAS,CAAC;AAoB1C,QAAA,MAAM,MAAM,EAAE,MAAyB,CAAC;AAuExC,eAAe,MAAM,CAAC"}

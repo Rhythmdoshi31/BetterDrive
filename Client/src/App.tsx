@@ -2,6 +2,9 @@ import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Home from "./components/Home";
+import StarredFiles from "./pages/Starred";
+import RecentFiles from "./pages/Recent";
+import TrashFiles from "./pages/Trash";
 // import ProtectedRoute from "./components/ProtectedRoute";
 
 const App: React.FC = () => {
@@ -23,6 +26,9 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />}/>
           <Route path="/dashboard" element={<Dashboard />} /> {/*<ProtectedRoute><Dashboard /></ProtectedRoute>*/}
+          <Route path="/starred" element={<StarredFiles />} />
+          <Route path="/recent" element={<RecentFiles />} />
+          <Route path="/trash" element={<TrashFiles />} />
         </Routes>
       </Router>
     </ div>
