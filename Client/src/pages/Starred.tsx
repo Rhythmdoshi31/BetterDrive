@@ -7,7 +7,6 @@ import MainNav from "../components/MainNav";
 import FileListView from "../components/Files";
 import {
   HouseIcon,
-  SignOutIcon,
   StarIcon,
   GearIcon,
   ClockIcon,
@@ -83,11 +82,6 @@ const StarredFiles: React.FC = () => {
       label: "Settings",
       href: "/settings",
       icon: <GearIcon size={20} />,
-    },
-    {
-      label: "Logout",
-      href: "/logout",
-      icon: <SignOutIcon size={20} />,
     },
   ];
 

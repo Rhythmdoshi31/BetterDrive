@@ -5,6 +5,7 @@ import Home from "./components/Home";
 import StarredFiles from "./pages/Starred";
 import RecentFiles from "./pages/Recent";
 import TrashFiles from "./pages/Trash";
+import FoldersPage from "./pages/Folders";
 // import ProtectedRoute from "./components/ProtectedRoute";
 
 const App: React.FC = () => {
@@ -29,6 +30,7 @@ const App: React.FC = () => {
           <Route path="/starred" element={<StarredFiles />} />
           <Route path="/recent" element={<RecentFiles />} />
           <Route path="/trash" element={<TrashFiles />} />
+          <Route path="/folders" element={<FoldersPage />} />
         </Routes>
       </Router>
     </ div>

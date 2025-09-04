@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
 import { createPortal } from "react-dom";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import type { AxiosResponse } from "axios";
 import type { DriveFile } from "../types";
 import { getFileTypeStyle } from "../utils/fileTypeHelper";
@@ -54,6 +54,7 @@ interface FileListViewProps {
     title: string;
     subtitle: string;
   };
+  enableFolderNavigation?: boolean;
 }
 
 interface ApiResponse {
@@ -76,7 +77,8 @@ const FileListView: React.FC<FileListViewProps> = ({
   emptyStateMessage = {
     title: "No files found",
     subtitle: "Files will appear here when available"
-  }
+  },
+  enableFolderNavigation = false
 }) => {
   // ============ TYPE GUARD FUNCTION ============
   const isHTMLElement = (element: any): element is HTMLElement => {
@@ -85,6 +87,15 @@ const FileListView: React.FC<FileListViewProps> = ({
            'contains' in element && 
            typeof element.contains === 'function';
   };
+
+  // ============ ROUTING HOOKS ============
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isTrashView = location.pathname === '/trash';
+
+  // Get folderId from URL params (for /folders?folderId=xyz)
+  const folderIdFromURL = searchParams.get('folderId');
 
   // ============ STATE VARIABLES ============
   const [previewFile, setPreviewFile] = useState<DriveFile | null>(null);
@@ -135,10 +146,6 @@ const FileListView: React.FC<FileListViewProps> = ({
     whileElementsMounted: autoUpdate,
   });
 
-  // ============ ROUTE DETECTION ============
-  const location = useLocation();
-  const isTrashView = location.pathname === '/trash';
-
   // ============ HELPER FUNCTIONS ============
   const openFilePreview = (file: DriveFile) => {
     setPreviewFile(file);
@@ -176,58 +183,70 @@ const FileListView: React.FC<FileListViewProps> = ({
     return title;
   };
 
-  // ============ FOLDER NAVIGATION ============
-  const navigateToFolder = (folderId: string | null) => {
-    setCurrentFolderId(folderId);
-    fetchFiles(undefined, folderId);
-  };
-
+  // ============ FOLDER NAVIGATION - ALWAYS NAVIGATE TO /folders ============
   const handleFolderClick = (folder: DriveFile) => {
     if (folder.mimeType === 'application/vnd.google-apps.folder') {
-      navigateToFolder(folder.id);
+      // ALWAYS navigate to /folders route for folder navigation
+      console.log("handelFolderClick on line 208 chala")
+      navigate(`/folders?folderId=${folder.id}`);
     }
   };
 
-  // ============ BREADCRUMB COMPONENT ============
+  // ============ UPDATED BREADCRUMB COMPONENT ============
   const Breadcrumb: React.FC = () => {
-    // Only show breadcrumb if we have navigation
-    if (!currentFolder && breadcrumbPath.length === 0) {
-      return null;
+  // Only show breadcrumb if we have navigation
+  if (!currentFolder && breadcrumbPath.length === 0) {
+    return null;
+  }
+
+  // FILTER OUT "MyDrive" or root folder from breadcrumb path
+  const filteredBreadcrumb = breadcrumbPath.filter((folder, idx) => {
+    // Skip the first folder if it's "MyDrive", "All Files", or other root folder names
+    if (idx === 0 && (
+      folder.name.toLowerCase().includes('mydrive') ||
+      folder.name.toLowerCase().includes('all files') ||
+      folder.name.toLowerCase().includes('drive') ||
+      folder.name === 'My Drive'
+    )) {
+      return false; // Don't include this folder in breadcrumb
     }
+    return true; // Include all other folders
+  });
 
-    return (
-      <nav className="flex items-center space-x-2 mb-4 text-sm">
-        <button
-          onClick={() => navigateToFolder(null)}
-          className="flex items-center gap-1 px-2 py-1 rounded hover:bg-neutral-700 transition-colors text-gray-300 hover:text-white"
-        >
-          <HouseIcon size={16} />
-          <span>Home</span>
-        </button>
+  return (
+    <nav className="flex items-center space-x-2 mb-4 text-sm">
+      <button
+        onClick={() => navigate('/dashboard')} // Home goes to Dashboard
+        className="flex items-center gap-1 px-2 py-1 rounded hover:bg-neutral-700 transition-colors text-gray-300 hover:text-white"
+      >
+        <HouseIcon size={16} />
+        <span>Home</span>
+      </button>
 
-        {breadcrumbPath.map((folder, index) => (
-          <React.Fragment key={folder.id}>
-            <CaretRightIcon size={14} className="text-gray-500" />
-            <button
-              onClick={() => navigateToFolder(folder.id)}
-              className="px-2 py-1 rounded hover:bg-neutral-700 transition-colors text-gray-300 hover:text-white truncate max-w-[150px]"
-            >
-              {folder.name}
-            </button>
-          </React.Fragment>
-        ))}
+      {/* Render FILTERED breadcrumb path */}
+      {filteredBreadcrumb.map((folder, index) => (
+        <React.Fragment key={folder.id}>
+          <CaretRightIcon size={14} className="text-gray-500" />
+          <button
+            onClick={() => navigate(`/folders?folderId=${folder.id}`)}
+            className="px-2 py-1 rounded hover:bg-neutral-700 transition-colors text-gray-300 hover:text-white truncate max-w-[150px]"
+          >
+            {folder.name}
+          </button>
+        </React.Fragment>
+      ))}
 
-        {currentFolder && (
-          <>
-            <CaretRightIcon size={14} className="text-gray-500" />
-            <span className="px-2 py-1 text-white font-medium truncate max-w-[150px]">
-              {currentFolder.name}
-            </span>
-          </>
-        )}
-      </nav>
-    );
-  };
+      {currentFolder && (
+        <>
+          <CaretRightIcon size={14} className="text-gray-500" />
+          <span className="px-2 py-1 text-white font-medium truncate max-w-[150px]">
+            {currentFolder.name}
+          </span>
+        </>
+      )}
+    </nav>
+  );
+};
 
   // ============ POPUP HANDLERS WITH FLOATING UI ============
   const handleFileDotsClick = (e: React.MouseEvent, fileId: string) => {
@@ -444,10 +463,17 @@ const FileListView: React.FC<FileListViewProps> = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [fetchMoreFiles, isLoadingMore, hasNextPage]);
 
-  // ============ INITIAL LOAD EFFECT ============
+  // ============ UPDATED LOAD EFFECT FOR URL FOLDER NAVIGATION ============
   useEffect(() => {
-    fetchFiles(undefined, currentFolderId);
-  }, [apiEndpoint, JSON.stringify(queryParams), currentFolderId]);
+    if (enableFolderNavigation) {
+      // Use folderId from URL params
+      setCurrentFolderId(folderIdFromURL);
+      fetchFiles(undefined, folderIdFromURL);
+    } else {
+      // Legacy behavior
+      fetchFiles(undefined, currentFolderId);
+    }
+  }, [apiEndpoint, JSON.stringify(queryParams), folderIdFromURL, currentFolderId, enableFolderNavigation]);
 
   // ============ LOADING & ERROR STATES ============
   if (isLoading) {
@@ -469,10 +495,10 @@ const FileListView: React.FC<FileListViewProps> = ({
 
   // ============ MAIN RENDER ============
   return (
-    <div className="mt-16 p-4">
+    <div className={`${location.pathname !== "/dashboard" ? "mt-2" : "mt-16"} p-4`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h1 className="font-antique-olive text-white md:text-xl lg:text-2xl tracking-wide">
+        <h1 className="font-antique-olive mt-2 text-white md:text-xl lg:text-2xl tracking-wide">
           {getDisplayTitle()} {showFileCount && `(${allFiles.length})`}
         </h1>
         <div className="flex items-center justify-center gap-4">
@@ -515,13 +541,12 @@ const FileListView: React.FC<FileListViewProps> = ({
               onClick={() => isFolder && handleFolderClick(file)}
             >
               {/* Name + Icon */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 cursor-pointer hover:text-blue-400">
                 {isFolder ? (
                   <FolderIcon size={20} weight="fill" className="text-blue-400" />
                 ) : (
                   <IconComponent size={20} weight="fill" style={{ color: iconColor }} />
                 )}
-                {/* STEP D: FIXED - CLICKABLE FILE NAMES */}
                 <h1 
                   className={`text-sm font-light font-fkGrotesk tracking-wider truncate ${
                     !isFolder ? 'cursor-pointer hover:text-blue-400' : ''
@@ -667,6 +692,7 @@ const FileListView: React.FC<FileListViewProps> = ({
             {(() => {
               const file = allFiles.find(f => f.id === openFilePopup);
               if (!file) return null;
+              const isFolder = file.mimeType === 'application/vnd.google-apps.folder';
 
               return (
                 <>
@@ -699,18 +725,20 @@ const FileListView: React.FC<FileListViewProps> = ({
                     </div>
 
                     <div className="border-t border-neutral-700/50 pt-3 space-y-1">
-                      {/* ADD PREVIEW BUTTON TO POPUP MENU */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openFilePreview(file);
-                          closeFilePopup();
-                        }}
-                        className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
-                      >
-                        <InfoIcon size={18} className="text-blue-400 flex-shrink-0" />
-                        <span className="text-sm text-gray-200 font-medium">Preview</span>
-                      </button>
+                      {/* Preview button for files */}
+                      {!isFolder && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openFilePreview(file);
+                            closeFilePopup();
+                          }}
+                          className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
+                        >
+                          <InfoIcon size={18} className="text-blue-400 flex-shrink-0" />
+                          <span className="text-sm text-gray-200 font-medium">Preview</span>
+                        </button>
+                      )}
 
                       {!isTrashView && (
                         <button
@@ -803,7 +831,7 @@ const FileListView: React.FC<FileListViewProps> = ({
       {/* End of results indicator */}
       {!hasNextPage && allFiles.length > 0 && (
         <div className="text-center py-8 text-gray-400 text-sm">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-center gap-2">
             <div className="w-16 h-px bg-gray-600"></div>
             <span>No more files to load</span>
             <div className="w-16 h-px bg-gray-600"></div>

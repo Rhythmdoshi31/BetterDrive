@@ -6,7 +6,6 @@ import { CleanSidebar } from "../components/ui/sidebar";
 import type { User } from "../types/auth";
 import {
   HouseIcon,
-  SignOutIcon,
   StarIcon,
   GearIcon,
   ClockIcon,
@@ -92,7 +91,6 @@ const Dashboard: React.FC = () => {
       icon: <TrashIcon size={20} />,
     },
     { label: "Settings", href: "/settings", icon: <GearIcon size={20} /> },
-    { label: "Logout", href: "/logout", icon: <SignOutIcon size={20} /> },
     
   ];
 

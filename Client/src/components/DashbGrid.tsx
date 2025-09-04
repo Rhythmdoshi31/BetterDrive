@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import type { DriveFile, DashboardResponse } from "../types";
 import { getFileTypeStyle } from "../utils/fileTypeHelper";
 import { CaretDownIcon, PlusIcon } from "@phosphor-icons/react";
+import FilePreviewModal from "./FilePreviewModal";
 
 interface DashboardGridProps {
   dashBoardData: DashboardResponse | null;
@@ -13,6 +14,9 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+
+  const [previewFile, setPreviewFile] = useState<DriveFile | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
@@ -33,6 +37,16 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
   const handleMouseUpOrLeave = () => {
     setIsDragging(false);
   };
+
+  const openFilePreview = (file: DriveFile) => {
+      setPreviewFile(file);
+      setIsPreviewOpen(true);
+    };
+  
+    const closeFilePreview = () => {
+      setIsPreviewOpen(false);
+      setPreviewFile(null);
+    };
 
   return (
     <div className="grid grid-cols-[30%_70%] gap-4 max-h-[35vh] pt-4">
@@ -100,6 +114,10 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
             return (
               <div
                 key={file.id}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    openFilePreview(file);
+                  }}
                 className="border-[1px] border-neutral-800 bg-[#18181B] w-40 h-[90%] rounded-lg shadow-sm flex flex-col overflow-hidden hover:shadow-md transition-shadow cursor-pointer flex-shrink-0 relative hover:bg-neutral-800 transition duration-100"
                 onMouseDown={(e) => e.stopPropagation()}
               >
@@ -133,7 +151,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
                     weight="fill"
                     style={{ color: iconColor }}
                   />
-                  <p className="text-[0.93rem] text-gray-200 truncate leading-tight flex-1">
+                  <p className="text-[0.93rem] text-gray-200 truncate leading-tight flex-1 hover:text-blue-600">
                     {file.name.slice(0, 12) + "..."}
                   </p>
                 </div>
@@ -142,6 +160,12 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
           })}
         </div>
       </div>
+      {/* File Preview Modal */}
+      <FilePreviewModal
+        isOpen={isPreviewOpen}
+        file={previewFile}
+        onClose={closeFilePreview}
+      />
     </div>
   );
 };

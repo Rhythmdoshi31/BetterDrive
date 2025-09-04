@@ -4,7 +4,7 @@ import React, { useState, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { Links } from "../../types/sidebar-types";
 import { useLocation } from "react-router-dom";
-import FileUpload from "../FileUpload"; // Import the FileUpload component
+import FileUpload from "../FileUpload";
 
 interface CleanSidebarProps {
   links: Links[];
@@ -19,7 +19,7 @@ export const CleanSidebar: React.FC<CleanSidebarProps> = ({
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [hoverOrigin, setHoverOrigin] = useState<'top' | 'bottom' | 'center'>('center');
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false); // NEW: Upload modal state
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const prevMousePosition = useRef({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -29,7 +29,6 @@ export const CleanSidebar: React.FC<CleanSidebarProps> = ({
 
   // Find active index with dashboard as fallback
   const activeIndex = useMemo(() => {
-    // First, try to find exact match
     let index = links.findIndex(link => {
       if (link.href === pathname) return true;
       if (pathname === '/dashboard' && link.href === '/dashboard') return true;
@@ -40,7 +39,7 @@ export const CleanSidebar: React.FC<CleanSidebarProps> = ({
     // If no match found, default to dashboard (My Drive)
     if (index === -1) {
       const dashboardIndex = links.findIndex(link => link.href === '/dashboard' || link.href === '/');
-      index = dashboardIndex !== -1 ? dashboardIndex : 0; // Fallback to first item if no dashboard found
+      index = dashboardIndex !== -1 ? dashboardIndex : 0;
     }
 
     return index;
@@ -51,12 +50,10 @@ export const CleanSidebar: React.FC<CleanSidebarProps> = ({
   const iconGap = 12;
   const stripStartY = 25;
 
-  // NEW: Handle upload completion
+  // Handle upload completion
   const handleUploadComplete = (files: File[]) => {
     console.log('Files uploaded successfully:', files);
-    // Here you can refresh your file list or update your UI
-    // For example: fetchFiles() or updateFileList()
-    setIsUploadModalOpen(false); // Close modal after successful upload
+    setIsUploadModalOpen(false);
   };
 
   const detectHoverDirection = useCallback((iconIndex: number, mouseY: number) => {
@@ -85,8 +82,7 @@ export const CleanSidebar: React.FC<CleanSidebarProps> = ({
   }, []);
 
   const getStripAnimation = (origin: 'top' | 'bottom' | 'center', iconIndex: number) => {
-    // Fixed hover strip positioning - aligned with active strip
-    const iconTopY = stripStartY + (iconIndex * (iconHeight + iconGap)) + 15; // Same as active strip
+    const iconTopY = stripStartY + (iconIndex * (iconHeight + iconGap)) + 15;
     const iconCenterY = iconTopY + (iconHeight / 2);
     const iconBottomY = iconTopY + iconHeight;
     const stripHeight = iconHeight;
@@ -116,27 +112,25 @@ export const CleanSidebar: React.FC<CleanSidebarProps> = ({
       <div 
         ref={containerRef}
         className={cn(
-          "fixed md:left-4 lg:left-9 top-[50%] -translate-y-[50%] z-40 flex flex-col items-center",
+          "fixed md:left-4 lg:left-9 top-[50%] -translate-y-[50%] z-40 flex flex-col items-center h-[50vh]",
           className
         )}
         onMouseMove={handleMouseMove}
       >
-        <div className="relative">
-          <div className="relative z-10 mb-0">
+        <div className="relative h-full flex flex-col">
+          <div className="relative z-10 mb-0 flex-shrink-0">
             <CleanSidebarItem 
               link={uploadLink} 
               isUpload 
-              onUploadClick={() => setIsUploadModalOpen(true)} // NEW: Pass upload handler
+              onUploadClick={() => setIsUploadModalOpen(true)}
             />
           </div>
 
           <div 
-            className="bg-white dark:bg-neutral-950/80 rounded-b-full border-[1px] border-gray-200 dark:border-neutral-800 flex flex-col items-center gap-3 -mt-7 pt-10 pb-4 px-2 relative md:w-10 lg:w-14"
-            style={{ 
-              minHeight: 'calc(70vh - 120px + 1vh)'
-            }}>
+            className="bg-white dark:bg-neutral-950/80 rounded-b-full border-[1px] border-gray-200 dark:border-neutral-800 flex flex-col items-center gap-3 -mt-7 pt-10 pb-6 px-2 relative md:w-10 lg:w-14 flex-1"
+          >
             
-            {/* Active Strip - Always visible (defaults to dashboard if no match) */}
+            {/* Active Strip */}
             <motion.div
               className="absolute left-0 w-1 bg-blue-600 dark:bg-blue-400 rounded-r-xs z-10"
               initial={false}
@@ -150,7 +144,7 @@ export const CleanSidebar: React.FC<CleanSidebarProps> = ({
               }}
             />
             
-            {/* Hover Strip - Only shows on hover when not the active page */}
+            {/* Hover Strip */}
             <AnimatePresence>
               {hoveredIndex !== null && hoveredIndex !== activeIndex && (
                 <motion.div
@@ -186,7 +180,7 @@ export const CleanSidebar: React.FC<CleanSidebarProps> = ({
         </div>
       </div>
 
-      {/* NEW: FileUpload Modal */}
+      {/* FileUpload Modal */}
       <FileUpload
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
@@ -203,7 +197,7 @@ interface CleanSidebarItemProps {
   onHover?: (mouseY: number) => void;
   onLeave?: () => void;
   index?: number;
-  onUploadClick?: () => void; // NEW: Upload click handler prop
+  onUploadClick?: () => void;
 }
 
 const CleanSidebarItem: React.FC<CleanSidebarItemProps> = ({ 
@@ -212,7 +206,7 @@ const CleanSidebarItem: React.FC<CleanSidebarItemProps> = ({
   isActive = false,
   onHover,
   onLeave,
-  onUploadClick, // NEW: Destructure upload handler
+  onUploadClick,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -226,16 +220,15 @@ const CleanSidebarItem: React.FC<CleanSidebarItemProps> = ({
     onLeave?.();
   };
 
-  // NEW: Handle upload button click
   const handleUploadClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation
-    onUploadClick?.(); // Open upload modal
+    e.preventDefault();
+    onUploadClick?.();
   };
 
   if (isUpload) {
     return (
       <div className="relative flex justify-center">
-        <button // CHANGED: From 'a' to 'button' and added click handler
+        <button
           onClick={handleUploadClick} 
           className="flex items-center justify-center w-10 lg:w-14 h-10 lg:h-14 bg-green-600 hover:bg-green-700 rounded-full transition-all duration-200 shadow-lg group"
           onMouseEnter={() => setIsHovered(true)}
@@ -255,7 +248,6 @@ const CleanSidebarItem: React.FC<CleanSidebarItemProps> = ({
                 className="absolute left-full ml-3 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap shadow-lg z-50 top-1/2 -translate-y-1/2"
               >
                 {link.label}
-                <div className="absolute right-full top-1/2 -translate-y-1/2"></div>
               </motion.div>
             )}
           </AnimatePresence>
