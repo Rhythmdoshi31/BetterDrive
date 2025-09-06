@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import { JWTPayload } from '../types';
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
-  console.log(req.cookies.token)
   const token = req.cookies.token;
   
   if (!token) {

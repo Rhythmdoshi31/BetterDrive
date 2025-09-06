@@ -64,7 +64,7 @@ export default async (req: Request, res: Response): Promise<void> => {
       } else {
         // Fetch initial dashboard data (top3, top7Previews)
         const dashboardResponse = await drive.files.list({
-          q: "trashed = false",
+          q: "'root' in parents and trashed = false",
           orderBy: "modifiedTime desc",
           pageSize: 50, // Get more for dashboard processing
           fields: "files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size)",
@@ -113,7 +113,7 @@ export default async (req: Request, res: Response): Promise<void> => {
 
       // Now fetch paginated files
       const paginatedResponse = await drive.files.list({
-        q: "trashed = false",
+        q: "'root' in parents and trashed = false",
         orderBy: "modifiedTime desc",
         pageSize: limit,
         fields: "nextPageToken, files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size, starred)",
@@ -135,7 +135,7 @@ export default async (req: Request, res: Response): Promise<void> => {
     } else {
       // Handle pagination requests (only allFiles)
       const paginatedResponse = await drive.files.list({
-        q: "trashed = false",
+        q: "'root' in parents and trashed = false",
         orderBy: "modifiedTime desc",
         pageSize: limit,
         pageToken: pageToken,

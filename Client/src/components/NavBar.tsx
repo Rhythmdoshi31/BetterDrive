@@ -23,6 +23,10 @@ const NavBar : React.FC = () => {
     { name: "Pricing", link: "#" },
     { name: "Contact", link: "#" },
   ];
+
+  const handleConnectDrive = (): void => {
+    window.location.href = "http://localhost:3000/auth/google";
+  };
     
   return (
     <>
@@ -31,7 +35,7 @@ const NavBar : React.FC = () => {
           <NavbarLogo />
           <NavItems items={items} />
           <div className="flex items-center justify-center gap-4 z-[60]">
-            <NavbarButton variant="gradient">Connect Drive</NavbarButton>
+            <NavbarButton variant="gradient" onClick={handleConnectDrive} >Connect Drive</NavbarButton>
             <Toggle />
           </div>
         </NavBody>

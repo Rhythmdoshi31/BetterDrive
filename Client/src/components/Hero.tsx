@@ -7,10 +7,6 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ className }) => {
-  const handleConnectDrive = (): void => {
-    window.location.href = "http://localhost:3000/auth/google";
-  };
-
   return (
     <div className={`relative h-svh ${className || ""}`}>
       <VantaBirdsBackground />
@@ -24,9 +20,14 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
   {/* Subheading - clearer value */}
   <TextGenerateEffect words="Simple . clean . effortless" className="text-xl mb-6 py-1 px-2 font-light font-oswald" />
   
-  {/* CTA - more action-oriented */}
+  {/* CTA */}
   <button 
-    onClick={handleConnectDrive}
+    onClick={() => {
+  const element = document.getElementById('imgCompare');
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+}}
     className="bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 px-7 py-[0.65rem] rounded-lg font-semibold text-lg transition-colors"
   >
     Feel The Difference

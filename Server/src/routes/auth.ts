@@ -70,7 +70,6 @@ router.get("/google/callback", async (req: Request, res: Response) => {
       refreshToken: tokenResponse.data.refresh_token,
     };
 
-    console.log(userData);
     const existingUser = await handleGoogleSignIn(userData);
 
     if (!existingUser) {

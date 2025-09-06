@@ -6,14 +6,14 @@ import type { AxiosResponse } from "axios";
 import type { DriveFile } from "../types";
 import { getFileTypeStyle } from "../utils/fileTypeHelper";
 import HorizontalStorageBar from "./StorageBar";
-import FilePreviewModal from './FilePreviewModal';
-import { 
-  DotsSixIcon, 
-  StarIcon, 
-  DotsThreeVerticalIcon, 
-  XIcon, 
-  InfoIcon, 
-  ClockIcon, 
+import FilePreviewModal from "./FilePreviewModal";
+import {
+  DotsSixIcon,
+  StarIcon,
+  DotsThreeVerticalIcon,
+  XIcon,
+  InfoIcon,
+  ClockIcon,
   HardDriveIcon,
   TrashIcon,
   ArrowCounterClockwiseIcon,
@@ -21,12 +21,18 @@ import {
   UploadIcon,
   FolderIcon,
   CaretRightIcon,
-  HouseIcon
+  HouseIcon,
 } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "motion/react";
-import { useFloating, offset, flip, shift, autoUpdate } from "@floating-ui/react";
-import FileUpload from './FileUpload';
-import CreateFolderModal from './CreateFolderModal';
+import {
+  useFloating,
+  offset,
+  flip,
+  shift,
+  autoUpdate,
+} from "@floating-ui/react";
+import FileUpload from "./FileUpload";
+import CreateFolderModal from "./CreateFolderModal";
 
 // Extended interfaces for folder navigation
 interface FolderMetadata {
@@ -76,26 +82,28 @@ const FileListView: React.FC<FileListViewProps> = ({
   headerSlot,
   emptyStateMessage = {
     title: "No files found",
-    subtitle: "Files will appear here when available"
+    subtitle: "Files will appear here when available",
   },
-  enableFolderNavigation = false
+  enableFolderNavigation = false,
 }) => {
   // ============ TYPE GUARD FUNCTION ============
   const isHTMLElement = (element: any): element is HTMLElement => {
-    return element && 
-           typeof element === 'object' && 
-           'contains' in element && 
-           typeof element.contains === 'function';
+    return (
+      element &&
+      typeof element === "object" &&
+      "contains" in element &&
+      typeof element.contains === "function"
+    );
   };
 
   // ============ ROUTING HOOKS ============
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const isTrashView = location.pathname === '/trash';
+  const isTrashView = location.pathname === "/trash";
 
   // Get folderId from URL params (for /folders?folderId=xyz)
-  const folderIdFromURL = searchParams.get('folderId');
+  const folderIdFromURL = searchParams.get("folderId");
 
   // ============ STATE VARIABLES ============
   const [previewFile, setPreviewFile] = useState<DriveFile | null>(null);
@@ -120,7 +128,9 @@ const FileListView: React.FC<FileListViewProps> = ({
 
   // Folder navigation state
   const [currentFolderId, setCurrentFolderId] = useState<string | null>(null);
-  const [currentFolder, setCurrentFolder] = useState<FolderMetadata | null>(null);
+  const [currentFolder, setCurrentFolder] = useState<FolderMetadata | null>(
+    null
+  );
   const [breadcrumbPath, setBreadcrumbPath] = useState<FolderMetadata[]>([]);
 
   // ============ FLOATING UI HOOKS ============
@@ -130,7 +140,7 @@ const FileListView: React.FC<FileListViewProps> = ({
     strategy: filePopupStrategy,
     refs: filePopupRefs,
   } = useFloating({
-    placement: 'bottom-end',
+    placement: "bottom-end",
     middleware: [offset(8), flip(), shift()],
     whileElementsMounted: autoUpdate,
   });
@@ -141,7 +151,7 @@ const FileListView: React.FC<FileListViewProps> = ({
     strategy: dropdownStrategy,
     refs: dropdownRefs,
   } = useFloating({
-    placement: 'bottom-start',
+    placement: "bottom-start",
     middleware: [offset(8), flip(), shift()],
     whileElementsMounted: autoUpdate,
   });
@@ -185,73 +195,74 @@ const FileListView: React.FC<FileListViewProps> = ({
 
   // ============ FOLDER NAVIGATION - ALWAYS NAVIGATE TO /folders ============
   const handleFolderClick = (folder: DriveFile) => {
-    if (folder.mimeType === 'application/vnd.google-apps.folder') {
+    if (folder.mimeType === "application/vnd.google-apps.folder") {
       // ALWAYS navigate to /folders route for folder navigation
-      console.log("handelFolderClick on line 208 chala")
+      console.log("handelFolderClick on line 208 chala");
       navigate(`/folders?folderId=${folder.id}`);
     }
   };
 
   // ============ UPDATED BREADCRUMB COMPONENT ============
   const Breadcrumb: React.FC = () => {
-  // Only show breadcrumb if we have navigation
-  if (!currentFolder && breadcrumbPath.length === 0) {
-    return null;
-  }
-
-  // FILTER OUT "MyDrive" or root folder from breadcrumb path
-  const filteredBreadcrumb = breadcrumbPath.filter((folder, idx) => {
-    // Skip the first folder if it's "MyDrive", "All Files", or other root folder names
-    if (idx === 0 && (
-      folder.name.toLowerCase().includes('mydrive') ||
-      folder.name.toLowerCase().includes('all files') ||
-      folder.name.toLowerCase().includes('drive') ||
-      folder.name === 'My Drive'
-    )) {
-      return false; // Don't include this folder in breadcrumb
+    // Only show breadcrumb if we have navigation
+    if (!currentFolder && breadcrumbPath.length === 0) {
+      return null;
     }
-    return true; // Include all other folders
-  });
 
-  return (
-    <nav className="flex items-center space-x-2 mb-4 text-sm">
-      <button
-        onClick={() => navigate('/dashboard')} // Home goes to Dashboard
-        className="flex items-center gap-1 px-2 py-1 rounded hover:bg-neutral-700 transition-colors text-gray-300 hover:text-white"
-      >
-        <HouseIcon size={16} />
-        <span>Home</span>
-      </button>
+    // FILTER OUT "MyDrive" or root folder from breadcrumb path
+    const filteredBreadcrumb = breadcrumbPath.filter((folder, idx) => {
+      // Skip the first folder if it's "MyDrive", "All Files", or other root folder names
+      if (
+        idx === 0 &&
+        (folder.name.toLowerCase().includes("mydrive") ||
+          folder.name.toLowerCase().includes("all files") ||
+          folder.name.toLowerCase().includes("drive") ||
+          folder.name === "My Drive")
+      ) {
+        return false; // Don't include this folder in breadcrumb
+      }
+      return true; // Include all other folders
+    });
 
-      {/* Render FILTERED breadcrumb path */}
-      {filteredBreadcrumb.map((folder, index) => (
-        <React.Fragment key={folder.id}>
-          <CaretRightIcon size={14} className="text-gray-500" />
-          <button
-            onClick={() => navigate(`/folders?folderId=${folder.id}`)}
-            className="px-2 py-1 rounded hover:bg-neutral-700 transition-colors text-gray-300 hover:text-white truncate max-w-[150px]"
-          >
-            {folder.name}
-          </button>
-        </React.Fragment>
-      ))}
+    return (
+      <nav className="flex items-center space-x-2 mb-4 text-sm">
+        <button
+          onClick={() => navigate("/dashboard")} // Home goes to Dashboard
+          className="flex items-center gap-1 px-2 py-1 rounded hover:bg-neutral-700 transition-colors text-gray-300 hover:text-white"
+        >
+          <HouseIcon size={16} />
+          <span>Home</span>
+        </button>
 
-      {currentFolder && (
-        <>
-          <CaretRightIcon size={14} className="text-gray-500" />
-          <span className="px-2 py-1 text-white font-medium truncate max-w-[150px]">
-            {currentFolder.name}
-          </span>
-        </>
-      )}
-    </nav>
-  );
-};
+        {/* Render FILTERED breadcrumb path */}
+        {filteredBreadcrumb.map((folder, index) => (
+          <React.Fragment key={folder.id}>
+            <CaretRightIcon size={14} className="text-gray-500" />
+            <button
+              onClick={() => navigate(`/folders?folderId=${folder.id}`)}
+              className="px-2 py-1 rounded hover:bg-neutral-700 transition-colors text-gray-300 hover:text-white truncate max-w-[150px]"
+            >
+              {folder.name}
+            </button>
+          </React.Fragment>
+        ))}
+
+        {currentFolder && (
+          <>
+            <CaretRightIcon size={14} className="text-gray-500" />
+            <span className="px-2 py-1 text-white font-medium truncate max-w-[150px]">
+              {currentFolder.name}
+            </span>
+          </>
+        )}
+      </nav>
+    );
+  };
 
   // ============ POPUP HANDLERS WITH FLOATING UI ============
   const handleFileDotsClick = (e: React.MouseEvent, fileId: string) => {
     e.stopPropagation();
-    
+
     if (openFilePopup === fileId) {
       setOpenFilePopup(null);
       return;
@@ -267,7 +278,7 @@ const FileListView: React.FC<FileListViewProps> = ({
 
   const handleDropdownClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    
+
     if (isDropdownOpen) {
       setIsDropdownOpen(false);
       return;
@@ -293,13 +304,13 @@ const FileListView: React.FC<FileListViewProps> = ({
   };
 
   const handleUploadComplete = (files: File[]) => {
-    console.log('Files uploaded successfully:', files);
+    console.log("Files uploaded successfully:", files);
     fetchFiles(undefined, currentFolderId);
     setIsUploadModalOpen(false);
   };
 
   const handleFolderCreated = (folderName: string) => {
-    console.log('Folder created successfully:', folderName);
+    console.log("Folder created successfully:", folderName);
     fetchFiles(undefined, currentFolderId);
   };
 
@@ -307,49 +318,54 @@ const FileListView: React.FC<FileListViewProps> = ({
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node;
-      
+
       // Close file popup if clicking outside
-      if (openFilePopup && 
-          filePopupRefs.floating.current && 
-          isHTMLElement(filePopupRefs.floating.current) &&
-          !filePopupRefs.floating.current.contains(target) &&
-          filePopupRefs.reference.current &&
-          isHTMLElement(filePopupRefs.reference.current) &&
-          !filePopupRefs.reference.current.contains(target)) {
+      if (
+        openFilePopup &&
+        filePopupRefs.floating.current &&
+        isHTMLElement(filePopupRefs.floating.current) &&
+        !filePopupRefs.floating.current.contains(target) &&
+        filePopupRefs.reference.current &&
+        isHTMLElement(filePopupRefs.reference.current) &&
+        !filePopupRefs.reference.current.contains(target)
+      ) {
         closeFilePopup();
       }
 
       // Close dropdown if clicking outside
-      if (isDropdownOpen && 
-          dropdownRefs.floating.current && 
-          isHTMLElement(dropdownRefs.floating.current) &&
-          !dropdownRefs.floating.current.contains(target) &&
-          dropdownRefs.reference.current &&
-          isHTMLElement(dropdownRefs.reference.current) &&
-          !dropdownRefs.reference.current.contains(target)) {
+      if (
+        isDropdownOpen &&
+        dropdownRefs.floating.current &&
+        isHTMLElement(dropdownRefs.floating.current) &&
+        !dropdownRefs.floating.current.contains(target) &&
+        dropdownRefs.reference.current &&
+        isHTMLElement(dropdownRefs.reference.current) &&
+        !dropdownRefs.reference.current.contains(target)
+      ) {
         closeDropdown();
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [openFilePopup, isDropdownOpen, filePopupRefs, dropdownRefs]);
 
   // ============ STAR/UNSTAR FUNCTIONALITY ============
   const toggleStar = async (fileId: string, currentStarred: boolean) => {
     try {
       setStarringFile(fileId);
-      
-      const response = await axios.patch(`/api/google/files/star/${fileId}?star=${!currentStarred}`, {
-        starred: !currentStarred
-      });
+
+      const response = await axios.patch(
+        `/api/google/files/star/${fileId}?star=${!currentStarred}`,
+        {
+          starred: !currentStarred,
+        }
+      );
 
       if (response.data.success) {
-        setAllFiles(prevFiles => 
-          prevFiles.map(file => 
-            file.id === fileId 
-              ? { ...file, starred: !currentStarred }
-              : file
+        setAllFiles((prevFiles) =>
+          prevFiles.map((file) =>
+            file.id === fileId ? { ...file, starred: !currentStarred } : file
           )
         );
       }
@@ -364,19 +380,21 @@ const FileListView: React.FC<FileListViewProps> = ({
   const toggleDelete = async (fileId: string) => {
     try {
       setDeletingFile(fileId);
-      
-      const endpoint = isTrashView 
-        ? `/api/google/files/restore/${fileId}` 
+
+      const endpoint = isTrashView
+        ? `/api/google/files/restore/${fileId}`
         : `/api/google/files/delete/${fileId}`;
-      
+
       const response = await axios.patch(endpoint);
 
       if (response.data.success) {
-        setAllFiles(prevFiles => 
-          prevFiles.filter(file => file.id !== fileId)
+        setAllFiles((prevFiles) =>
+          prevFiles.filter((file) => file.id !== fileId)
         );
-        
-        console.log(isTrashView ? 'File restored successfully' : 'File moved to trash');
+
+        console.log(
+          isTrashView ? "File restored successfully" : "File moved to trash"
+        );
       }
     } catch (error) {
       console.error("Error toggling delete:", error);
@@ -388,7 +406,7 @@ const FileListView: React.FC<FileListViewProps> = ({
   // ============ DUPLICATE REMOVAL FUNCTION ============
   const removeDuplicateFiles = (files: DriveFile[]): DriveFile[] => {
     const seenIds = new Set<string>();
-    return files.filter(file => {
+    return files.filter((file) => {
       if (seenIds.has(file.id)) {
         return false;
       }
@@ -398,15 +416,18 @@ const FileListView: React.FC<FileListViewProps> = ({
   };
 
   // ============ MAIN FETCH FILES FUNCTION ============
-  const fetchFiles = async (pageToken?: string, folderId?: string | null): Promise<void> => {
+  const fetchFiles = async (
+    pageToken?: string,
+    folderId?: string | null
+  ): Promise<void> => {
     try {
       setError(null);
 
       const params = new URLSearchParams({
-        limit: '35',
+        limit: "35",
         ...queryParams,
         ...(pageToken && { pageToken }),
-        ...(folderId && { folderId })
+        ...(folderId && { folderId }),
       });
 
       const response: AxiosResponse<ApiResponse> = await axios.get(
@@ -417,20 +438,21 @@ const FileListView: React.FC<FileListViewProps> = ({
         const uniqueFiles = removeDuplicateFiles(response.data.allFiles || []);
         setAllFiles(uniqueFiles);
         setIsLoading(false);
-        
+
         setCurrentFolder(response.data.currentFolder || null);
         setBreadcrumbPath(response.data.breadcrumbPath || []);
       } else {
-        setAllFiles(prevFiles => {
-          const existingIds = new Set(prevFiles.map(f => f.id));
-          const newFiles = (response.data.allFiles || []).filter(file => !existingIds.has(file.id));
+        setAllFiles((prevFiles) => {
+          const existingIds = new Set(prevFiles.map((f) => f.id));
+          const newFiles = (response.data.allFiles || []).filter(
+            (file) => !existingIds.has(file.id)
+          );
           return [...prevFiles, ...newFiles];
         });
       }
 
       setHasNextPage(response.data.hasNextPage || false);
       setNextPageToken(response.data.nextPageToken || null);
-
     } catch (error: unknown) {
       console.error("Error fetching files:", error);
       setError("Failed to fetch files");
@@ -451,9 +473,10 @@ const FileListView: React.FC<FileListViewProps> = ({
   useEffect(() => {
     const handleScroll = () => {
       if (
-        window.innerHeight + document.documentElement.scrollTop >= 
-        document.documentElement.offsetHeight - 1000 &&
-        !isLoadingMore && hasNextPage
+        window.innerHeight + document.documentElement.scrollTop >=
+          document.documentElement.offsetHeight - 1000 &&
+        !isLoadingMore &&
+        hasNextPage
       ) {
         fetchMoreFiles();
       }
@@ -473,7 +496,13 @@ const FileListView: React.FC<FileListViewProps> = ({
       // Legacy behavior
       fetchFiles(undefined, currentFolderId);
     }
-  }, [apiEndpoint, JSON.stringify(queryParams), folderIdFromURL, currentFolderId, enableFolderNavigation]);
+  }, [
+    apiEndpoint,
+    JSON.stringify(queryParams),
+    folderIdFromURL,
+    currentFolderId,
+    enableFolderNavigation,
+  ]);
 
   // ============ LOADING & ERROR STATES ============
   if (isLoading) {
@@ -495,7 +524,9 @@ const FileListView: React.FC<FileListViewProps> = ({
 
   // ============ MAIN RENDER ============
   return (
-    <div className={`${location.pathname !== "/dashboard" ? "mt-2" : "mt-16"} p-4`}>
+    <div
+      className={`${location.pathname !== "/dashboard" ? "mt-2" : "mt-16"} p-4`}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="font-antique-olive mt-2 text-white md:text-xl lg:text-2xl tracking-wide">
@@ -504,8 +535,8 @@ const FileListView: React.FC<FileListViewProps> = ({
         <div className="flex items-center justify-center gap-4">
           {showStorage && storage && <HorizontalStorageBar storage={storage} />}
           {headerSlot}
-          
-          <button 
+
+          <button
             onClick={handleDropdownClick}
             className="p-2 hover:bg-neutral-700 rounded-lg transition-colors duration-200"
           >
@@ -531,37 +562,45 @@ const FileListView: React.FC<FileListViewProps> = ({
       {/* File Rows */}
       {allFiles.length > 0 ? (
         allFiles.map((file) => {
-          const { stripColor, iconColor, IconComponent } = getFileTypeStyle(file.mimeType);
-          const isFolder = file.mimeType === 'application/vnd.google-apps.folder';
+          const { stripColor, iconColor, IconComponent } = getFileTypeStyle(
+            file.mimeType
+          );
+          const isFolder =
+            file.mimeType === "application/vnd.google-apps.folder";
 
           return (
             <div
               key={file.id}
-              className={`grid grid-cols-[70%_30%] md:grid-cols-[45%_20%_15%_15%] lg:grid-cols-[35%_20%_15%_15%_15%] gap-4 h-12 text-white w-full rounded-lg px-4 mb-3 items-center border-[1px] border-neutral-800 bg-[#18181B] hover:bg-neutral-800 hover:scale-[1.008] transition duration-100 ${isFolder ? 'cursor-pointer' : 'cursor-default'}`}
-              onClick={() => isFolder && handleFolderClick(file)}
+              className={`grid grid-cols-[70%_30%] md:grid-cols-[45%_20%_15%_15%] lg:grid-cols-[35%_20%_15%_15%_15%] gap-4 h-12 text-white w-full rounded-lg px-4 mb-3 items-center border-[1px] border-neutral-800 bg-[#18181B] hover:bg-neutral-800 hover:scale-[1.008] transition duration-100 cursor-pointer`}
+              onClick={() => {
+                if (isFolder) {
+                  handleFolderClick(file);
+                } else {
+                  openFilePreview(file);
+                }
+              }}
             >
               {/* Name + Icon */}
-              <div className="flex items-center gap-2 cursor-pointer hover:text-blue-400">
+              <div className="flex items-center gap-2">
                 {isFolder ? (
-                  <FolderIcon size={20} weight="fill" className="text-blue-400" />
+                  <FolderIcon
+                    size={20}
+                    weight="fill"
+                    className="text-blue-400"
+                  />
                 ) : (
-                  <IconComponent size={20} weight="fill" style={{ color: iconColor }} />
+                  <IconComponent
+                    size={20}
+                    weight="fill"
+                    style={{ color: iconColor }}
+                  />
                 )}
-                <h1 
-                  className={`text-sm font-light font-fkGrotesk tracking-wider truncate ${
-                    !isFolder ? 'cursor-pointer hover:text-blue-400' : ''
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (!isFolder) {
-                      openFilePreview(file);
-                    }
-                  }}
-                >
+                <h1 className="text-sm font-light font-fkGrotesk tracking-wider truncate hover:text-blue-600">
                   {(() => {
-                    const nameWithoutExtension = file.name.lastIndexOf(".") !== -1 && !isFolder
-                      ? file.name.substring(0, file.name.lastIndexOf("."))
-                      : file.name;
+                    const nameWithoutExtension =
+                      file.name.lastIndexOf(".") !== -1 && !isFolder
+                        ? file.name.substring(0, file.name.lastIndexOf("."))
+                        : file.name;
                     return nameWithoutExtension.length > 25
                       ? nameWithoutExtension.slice(0, 25) + "..."
                       : nameWithoutExtension;
@@ -576,7 +615,7 @@ const FileListView: React.FC<FileListViewProps> = ({
 
               {/* Size (MD+ only) */}
               <div className="hidden md:flex justify-center items-center text-sm font-light text-gray-300">
-                {isFolder ? '--' : formatFileSize(parseInt(file.size || "0"))}
+                {isFolder ? "--" : formatFileSize(parseInt(file.size || "0"))}
               </div>
 
               {/* Modified Date (LG only) */}
@@ -584,10 +623,13 @@ const FileListView: React.FC<FileListViewProps> = ({
                 {formatDate(file.modifiedTime)}
               </div>
 
-              {/* 3 Dots Menu (ALL devices) */}
+              {/* 3 Dots Menu (ALL devices) - Prevent row click */}
               <div className="flex justify-center items-center">
                 <button
-                  onClick={(e) => handleFileDotsClick(e, file.id)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent row click when clicking dots
+                    handleFileDotsClick(e, file.id);
+                  }}
                   className="p-2 hover:bg-neutral-700 rounded-full transition-colors duration-200"
                 >
                   <DotsThreeVerticalIcon size={16} className="text-gray-400" />
@@ -604,208 +646,267 @@ const FileListView: React.FC<FileListViewProps> = ({
       )}
 
       {/* Header Dropdown Menu - Using Floating UI */}
-      {isDropdownOpen && createPortal(
-        <AnimatePresence>
-          <motion.div
-            key="header-dropdown-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-transparent z-[9997]"
-            onClick={closeDropdown}
-          />
-          
-          <motion.div
-            key="header-dropdown"
-            ref={dropdownRefs.setFloating}
-            initial={{ opacity: 0, scale: 0.95, y: -10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -10 }}
-            transition={{ duration: 0.15 }}
-            className="w-56 bg-neutral-900/95 backdrop-blur-md border border-neutral-600/50 rounded-xl shadow-2xl z-[9999]"
-            style={{
-              position: dropdownStrategy,
-              top: dropdownY ?? 0,
-              left: dropdownX ?? 0,
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-2 space-y-1">
-              <button
-                onClick={handleUploadFiles}
-                className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
-              >
-                <UploadIcon size={18} className="text-green-500 flex-shrink-0" />
-                <span className="text-sm text-gray-200 font-medium">Upload Files</span>
-              </button>
+      {isDropdownOpen &&
+        createPortal(
+          <AnimatePresence>
+            <motion.div
+              key="header-dropdown-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-transparent z-[9997]"
+              onClick={closeDropdown}
+            />
 
-              <button
-                onClick={handleCreateFolder}
-                className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
-              >
-                <FolderPlusIcon size={18} className="text-blue-500 flex-shrink-0" />
-                <span className="text-sm text-gray-200 font-medium">New Folder</span>
-              </button>
+            <motion.div
+              key="header-dropdown"
+              ref={dropdownRefs.setFloating}
+              initial={{ opacity: 0, scale: 0.95, y: -10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -10 }}
+              transition={{ duration: 0.15 }}
+              className="w-56 bg-neutral-900/95 backdrop-blur-md border border-neutral-600/50 rounded-xl shadow-2xl z-[9999]"
+              style={{
+                position: dropdownStrategy,
+                top: dropdownY ?? 0,
+                left: dropdownX ?? 0,
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-2 space-y-1">
+                <button
+                  onClick={handleUploadFiles}
+                  className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
+                >
+                  <UploadIcon
+                    size={18}
+                    className="text-green-500 flex-shrink-0"
+                  />
+                  <span className="text-sm text-gray-200 font-medium">
+                    Upload Files
+                  </span>
+                </button>
 
-              <div className="h-px bg-neutral-700/50 my-2"></div>
+                <button
+                  onClick={handleCreateFolder}
+                  className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
+                >
+                  <FolderPlusIcon
+                    size={18}
+                    className="text-blue-500 flex-shrink-0"
+                  />
+                  <span className="text-sm text-gray-200 font-medium">
+                    New Folder
+                  </span>
+                </button>
 
-              <button
-                onClick={closeDropdown}
-                className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
-              >
-                <InfoIcon size={18} className="text-gray-400 flex-shrink-0" />
-                <span className="text-sm text-gray-200 font-medium">Settings</span>
-              </button>
-            </div>
-          </motion.div>
-        </AnimatePresence>,
-        document.body
-      )}
+                <div className="h-px bg-neutral-700/50 my-2"></div>
+
+                <button
+                  onClick={closeDropdown}
+                  className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
+                >
+                  <InfoIcon size={18} className="text-gray-400 flex-shrink-0" />
+                  <span className="text-sm text-gray-200 font-medium">
+                    Settings
+                  </span>
+                </button>
+              </div>
+            </motion.div>
+          </AnimatePresence>,
+          document.body
+        )}
 
       {/* File Action Popup - Using Floating UI */}
-      {openFilePopup && createPortal(
-        <AnimatePresence>
-          <motion.div
-            key="file-popup-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/20 backdrop-blur-xxs z-[9998]"
-            onClick={closeFilePopup}
-          />
-          
-          <motion.div
-            key={`file-popup-${openFilePopup}`}
-            ref={filePopupRefs.setFloating}
-            initial={{ opacity: 0, scale: 0.95, y: -10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -10 }}
-            transition={{ duration: 0.15 }}
-            className="w-64 bg-neutral-900/95 backdrop-blur-md border border-neutral-600/50 rounded-xl shadow-2xl z-[9999]"
-            style={{
-              position: filePopupStrategy,
-              top: filePopupY ?? 0,
-              left: filePopupX ?? 0,
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {(() => {
-              const file = allFiles.find(f => f.id === openFilePopup);
-              if (!file) return null;
-              const isFolder = file.mimeType === 'application/vnd.google-apps.folder';
+      {openFilePopup &&
+        createPortal(
+          <AnimatePresence>
+            <motion.div
+              key="file-popup-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/20 backdrop-blur-xxs z-[9998]"
+              onClick={closeFilePopup}
+            />
 
-              return (
-                <>
-                  <div className="p-4 border-b border-neutral-700/50">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-medium text-white truncate pr-2 text-sm">
-                        {file.name.length > 20 ? file.name.slice(0, 20) + "..." : file.name}
-                      </h3>
-                      <button
-                        onClick={closeFilePopup}
-                        className="p-1.5 hover:bg-neutral-700/50 rounded-lg transition-colors duration-200"
-                      >
-                        <XIcon size={14} className="text-gray-400" />
-                      </button>
-                    </div>
-                  </div>
+            <motion.div
+              key={`file-popup-${openFilePopup}`}
+              ref={filePopupRefs.setFloating}
+              initial={{ opacity: 0, scale: 0.95, y: -10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -10 }}
+              transition={{ duration: 0.15 }}
+              className="w-64 bg-neutral-900/95 backdrop-blur-md border border-neutral-600/50 rounded-xl shadow-2xl z-[9999]"
+              style={{
+                position: filePopupStrategy,
+                top: filePopupY ?? 0,
+                left: filePopupX ?? 0,
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {(() => {
+                const file = allFiles.find((f) => f.id === openFilePopup);
+                if (!file) return null;
+                const isFolder =
+                  file.mimeType === "application/vnd.google-apps.folder";
 
-                  <div className="p-4 space-y-3">
-                    <div className="space-y-2.5">
-                      <div className="flex items-center gap-3 text-sm">
-                        <HardDriveIcon size={16} className="text-gray-400 flex-shrink-0" />
-                        <span className="text-gray-300 min-w-[60px]">Size:</span>
-                        <span className="text-white font-medium">{formatFileSize(parseInt(file.size || "0"))}</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-sm">
-                        <ClockIcon size={16} className="text-gray-400 flex-shrink-0" />
-                        <span className="text-gray-300 min-w-[60px]">Modified:</span>
-                        <span className="text-white font-medium">{formatDate(file.modifiedTime)}</span>
-                      </div>
-                    </div>
-
-                    <div className="border-t border-neutral-700/50 pt-3 space-y-1">
-                      {/* Preview button for files */}
-                      {!isFolder && (
+                return (
+                  <>
+                    <div className="p-4 border-b border-neutral-700/50">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-medium text-white truncate pr-2 text-sm">
+                          {file.name.length > 20
+                            ? file.name.slice(0, 20) + "..."
+                            : file.name}
+                        </h3>
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openFilePreview(file);
-                            closeFilePopup();
-                          }}
-                          className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
+                          onClick={closeFilePopup}
+                          className="p-1.5 hover:bg-neutral-700/50 rounded-lg transition-colors duration-200"
                         >
-                          <InfoIcon size={18} className="text-blue-400 flex-shrink-0" />
-                          <span className="text-sm text-gray-200 font-medium">Preview</span>
+                          <XIcon size={14} className="text-gray-400" />
                         </button>
-                      )}
+                      </div>
+                    </div>
 
-                      {!isTrashView && (
+                    <div className="p-4 space-y-3">
+                      <div className="space-y-2.5">
+                        <div className="flex items-center gap-3 text-sm">
+                          <HardDriveIcon
+                            size={16}
+                            className="text-gray-400 flex-shrink-0"
+                          />
+                          <span className="text-gray-300 min-w-[60px]">
+                            Size:
+                          </span>
+                          <span className="text-white font-medium">
+                            {formatFileSize(parseInt(file.size || "0"))}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3 text-sm">
+                          <ClockIcon
+                            size={16}
+                            className="text-gray-400 flex-shrink-0"
+                          />
+                          <span className="text-gray-300 min-w-[60px]">
+                            Modified:
+                          </span>
+                          <span className="text-white font-medium">
+                            {formatDate(file.modifiedTime)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="border-t border-neutral-700/50 pt-3 space-y-1">
+                        {/* Preview button for files */}
+                        {!isFolder && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openFilePreview(file);
+                              closeFilePopup();
+                            }}
+                            className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
+                          >
+                            <InfoIcon
+                              size={18}
+                              className="text-blue-400 flex-shrink-0"
+                            />
+                            <span className="text-sm text-gray-200 font-medium">
+                              Preview
+                            </span>
+                          </button>
+                        )}
+
+                        {!isTrashView && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleStar(file.id, file.starred);
+                              closeFilePopup();
+                            }}
+                            disabled={starringFile === file.id}
+                            className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
+                          >
+                            {starringFile === file.id ? (
+                              <div className="animate-spin w-4 h-4 border border-yellow-500 border-t-transparent rounded-full flex-shrink-0"></div>
+                            ) : (
+                              <StarIcon
+                                size={18}
+                                weight={file.starred ? "fill" : "regular"}
+                                className={`flex-shrink-0 ${
+                                  file.starred
+                                    ? "text-yellow-500"
+                                    : "text-gray-400"
+                                }`}
+                              />
+                            )}
+                            <span className="text-sm text-gray-200 font-medium">
+                              {file.starred
+                                ? "Remove from starred"
+                                : "Add to starred"}
+                            </span>
+                          </button>
+                        )}
+
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            toggleStar(file.id, file.starred);
+                            toggleDelete(file.id);
                             closeFilePopup();
                           }}
-                          disabled={starringFile === file.id}
+                          disabled={deletingFile === file.id}
                           className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
                         >
-                          {starringFile === file.id ? (
-                            <div className="animate-spin w-4 h-4 border border-yellow-500 border-t-transparent rounded-full flex-shrink-0"></div>
-                          ) : (
-                            <StarIcon
+                          {deletingFile === file.id ? (
+                            <div
+                              className={`animate-spin w-4 h-4 border ${
+                                isTrashView
+                                  ? "border-green-500"
+                                  : "border-red-500"
+                              } border-t-transparent rounded-full flex-shrink-0`}
+                            ></div>
+                          ) : isTrashView ? (
+                            <ArrowCounterClockwiseIcon
                               size={18}
-                              weight={file.starred ? "fill" : "regular"}
-                              className={`flex-shrink-0 ${file.starred ? "text-yellow-500" : "text-gray-400"}`}
+                              className="text-green-500 flex-shrink-0"
+                            />
+                          ) : (
+                            <TrashIcon
+                              size={18}
+                              className="text-red-500 flex-shrink-0"
                             />
                           )}
                           <span className="text-sm text-gray-200 font-medium">
-                            {file.starred ? "Remove from starred" : "Add to starred"}
+                            {isTrashView ? "Restore file" : "Move to trash"}
                           </span>
                         </button>
-                      )}
 
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleDelete(file.id);
-                          closeFilePopup();
-                        }}
-                        disabled={deletingFile === file.id}
-                        className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
-                      >
-                        {deletingFile === file.id ? (
-                          <div className={`animate-spin w-4 h-4 border ${isTrashView ? 'border-green-500' : 'border-red-500'} border-t-transparent rounded-full flex-shrink-0`}></div>
-                        ) : isTrashView ? (
-                          <ArrowCounterClockwiseIcon size={18} className="text-green-500 flex-shrink-0" />
-                        ) : (
-                          <TrashIcon size={18} className="text-red-500 flex-shrink-0" />
-                        )}
-                        <span className="text-sm text-gray-200 font-medium">
-                          {isTrashView ? "Restore file" : "Move to trash"}
-                        </span>
-                      </button>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          console.log("Show file info for:", file.id);
-                          closeFilePopup();
-                        }}
-                        className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
-                      >
-                        <InfoIcon size={18} className="text-gray-400 flex-shrink-0" />
-                        <span className="text-sm text-gray-200 font-medium">File info</span>
-                      </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            console.log("Show file info for:", file.id);
+                            closeFilePopup();
+                          }}
+                          className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
+                        >
+                          <InfoIcon
+                            size={18}
+                            className="text-gray-400 flex-shrink-0"
+                          />
+                          <span className="text-sm text-gray-200 font-medium">
+                            File info
+                          </span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </>
-              );
-            })()}
-          </motion.div>
-        </AnimatePresence>,
-        document.body
-      )}
+                  </>
+                );
+              })()}
+            </motion.div>
+          </AnimatePresence>,
+          document.body
+        )}
 
       {/* Upload Modal */}
       <FileUpload

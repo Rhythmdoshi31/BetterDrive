@@ -52,7 +52,6 @@ router.get("/google/callback", async (req, res) => {
             accessToken: tokenResponse.data.access_token,
             refreshToken: tokenResponse.data.refresh_token,
         };
-        console.log(userData);
         const existingUser = await (0, handleSignIn_1.handleGoogleSignIn)(userData);
         if (!existingUser) {
             console.error("Failed to sign in user");

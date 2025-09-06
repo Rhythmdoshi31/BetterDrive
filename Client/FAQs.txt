@@ -1,0 +1,35 @@
+Q: What permissions does BetterDrive request on my Google Drive?
+A: Only the operations you perform here. We only access files when you specifically interact with them through our interface - no background scanning or automatic file access.
+
+Q: Is any of my data stored outside Google?
+A: No, it's just you and your Drive privately. We don't store any of your files or content on our servers - everything stays in your Google Drive.
+
+Q: Can BetterDrive see or read my file contents?
+A: We only access files when you open, share, or organize them through BetterDrive. We never scan, read, or analyze your file contents in the background.
+
+Q: Do you track what files I have or how I use them?
+A: No, we don't track your file usage patterns or create profiles based on your content. We only process the files you actively work with during your session.
+
+Q: Can BetterDrive employees access my Google Drive files?
+A: No, our team cannot access your Google Drive files. The connection is directly between you and Google - we act as a secure interface only.
+
+Q: What happens to my data if I disconnect BetterDrive?
+A: You can revoke access anytime through your Google Account settings. Once disconnected, BetterDrive loses all access to your Drive and we delete any temporary session data.
+
+Q: Do you share my information with third parties?
+A: Never. We don't share, sell, or monetize your data. Your Google Drive content and personal information stay completely private.
+
+Q: Is my connection to Google Drive encrypted?
+A: Yes, all communication between BetterDrive and Google Drive uses secure HTTPS encryption, the same standard used by banks and other secure websites.
+
+Q: Can I control which files BetterDrive can access?
+A: Currently, Google's system grants access to your full Drive when you connect. However, we only access files when you specifically interact with them through our interface.
+
+Q: Do you store my login credentials or Google password?
+A: No, we never see or store your Google password. Authentication is handled entirely by Google using secure OAuth tokens.
+
+Q: What data do you collect about me?
+A: We only collect basic account info (email, name) needed to provide the service. We don't collect file metadata, usage analytics, or personal content.
+
+Q: How do I know BetterDrive is safe to use?
+A: We use Google's official OAuth security standards, the same system trusted by millions of apps. You can revoke access anytime from your Google Account security settings.
