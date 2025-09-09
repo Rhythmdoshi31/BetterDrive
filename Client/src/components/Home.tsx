@@ -5,7 +5,8 @@ import { ComparisonPage } from "./ComparisonPage";
 import { CardsPage } from "./CardsPage";
 import { PricingPage } from "./PricingPage";
 import { ReviewsPage } from "./ReviewsPage";
-
+import { FAQsPage } from "./FAQsPage";
+import { Footer } from "./Footer";
 const Home: React.FC = () => {
   return (
     <div className="h-full">
@@ -16,6 +17,8 @@ const Home: React.FC = () => {
       <CardsPage />
       <ReviewsPage />
       <PricingPage />
+      <FAQsPage />
+      <Footer />
     </div>
   );
 };

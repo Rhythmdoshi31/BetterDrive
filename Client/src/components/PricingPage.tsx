@@ -42,7 +42,7 @@ export const PricingPage = () => {
       }}
     >
       <h1 className="text-4xl pr-1 text-white font-antique-olive">Pricing</h1>
-      <hr className="mt-[2vh] mb-[0.5vh] h-[2px] dark:h-[1px] w-[7vw] bg-neutral-900/50 dark:bg-gray-500" />
+      <hr className="mt-[2vh] mb-[0.5vh] h-[2px] dark:h-[1px] w-[7vw] bg-neutral-900/50 dark:bg-gray-600" />
 
       <div className="flex justify-center gap-6 px-4 py-8 w-full">
         {pricingPlans.map((plan) => (
