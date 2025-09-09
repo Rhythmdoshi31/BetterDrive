@@ -38,7 +38,7 @@ export const PricingPage = () => {
       className="h-[100vh] w-full flex flex-col items-center justify-start pt-[14vh] pb-[4vh]"
       style={{
         background:
-          "linear-gradient(225deg, rgba(0,0,0,0.5) 0%, rgba(8, 8, 28, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%), linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(13, 13, 68, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%)",
+          "linear-gradient(225deg, rgba(3, 12, 37,0.5) 0%, rgba(8, 8, 28, 0.5) 50%, rgba(0, 0, 0, 0.5) 100%), linear-gradient(45deg, rgba(3, 12, 37,0.5) 0%, rgba(13, 13, 68, 0.5) 50%, rgba(0, 0, 0, 0.5) 100%)",
       }}
     >
       <h1 className="text-4xl pr-1 text-white font-antique-olive">Pricing</h1>

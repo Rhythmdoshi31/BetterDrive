@@ -4,6 +4,7 @@ import NavBar from "./NavBar";
 import { ComparisonPage } from "./ComparisonPage";
 import { CardsPage } from "./CardsPage";
 import { PricingPage } from "./PricingPage";
+import { ReviewsPage } from "./ReviewsPage";
 
 const Home: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ const Home: React.FC = () => {
       {/* bg-gray-100 dark:bg-neutral-900/50 */}
       <ComparisonPage />
       <CardsPage />
+      <ReviewsPage />
       <PricingPage />
     </div>
   );
