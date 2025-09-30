@@ -1,30 +1,46 @@
 import type React from "react";
 import { WobbleCard } from "./ui/wobble-card";
+import { useEffect, useState } from "react";
+import '../styles/gradients.css'
 
 export const CardsPage: React.FC = () => {
+    const [isDarkMode, setIsDarkMode] = useState(false);
+  
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    };
+    
+    // Check initially
+    checkDarkMode();
+    
+    // Watch for class changes
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    return () => observer.disconnect();
+  }, []); 
   return (
-    <div
-      className="flex flex-col items-center justify-center h-[100vh] pt-[3vh]"
-      style={{
-    background:
-    "linear-gradient(45deg, rgba(0,0,0,0.5) 0%, rgba(8, 8, 28, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%), linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(13, 13, 68, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%)",
-}}
-
+    <div id="features"
+      className={`flex flex-col items-center justify-center h-[160vh] sm:h-[140vh] md:h-[120vh] lg:h-[100vh] pt-[3vh] ${isDarkMode ? 'cardsPage-dark' : 'bg-[#FFFEFE]'}`}
     >
-      <h1 className="text-4xl pr-1 text-white font-antique-olive">
+      <h1 className="text-4xl pr-1 dark:text-gray-100 text-neutral-900 font-antique-olive text-center">
         What Makes BetterDrive Special
       </h1>
-      <hr className="mt-[2vh] mb-[-3vh] h-[2px] dark:h-[1px] w-[7vw] bg-neutral-900/50 dark:bg-gray-500" />
+      <hr className="mt-[2.4vh] mb-[-1.4vh] h-[2px] dark:h-[1px] w-[7vw] bg-neutral-900/50 dark:bg-gray-500" />
 
-      <div className="h-[65vh] grid grid-cols-5 gap-4 px-[15vw] pt-[8vh]">
+      <div className=" h-[115vh] min-[480px]:h-[100vh] sm:h-[100vh] md:h-[75vh] lg:h-[65vh] grid grid-cols-1 md:grid-cols-5 gap-4 px-[15vw] pt-[8vh]">
         <WobbleCard
           children={[
             "Find Files Faster",
-            "Smart visual organization gets you there quickly",
+            "Smart visual organization gets you there quickly with our smart search",
           ]}
-          titleClassName="text-left text-[1.75rem] font-antique-olive font-light mb-4"
-          descriptionClassName="text-left font-fkGrotesk"
-          containerClassName="col-span-2 bg-[#A71254]"
+          titleClassName="text-center md:text-left text-[1.75rem] font-antique-olive font-light mb-4 md:mb-2 lg:mb-4"
+          descriptionClassName="text-center md:text-left font-fkGrotesk"
+          containerClassName="col-span-1 md:col-span-2 bg-pink-600/80 dark:bg-[#A71254]"
         />
         <WobbleCard
           
@@ -32,27 +48,27 @@ export const CardsPage: React.FC = () => {
             "More Intuitive Design",
             "Clean, logical interface that works the way you think - no more hunting for basic features",
           ]}
-          titleClassName="text-left text-[1.75rem] font-antique-olive font-light mb-4"
-          descriptionClassName="text-left font-fkGrotesk  mr-[15vw]"
-          containerClassName="col-span-3 bg-pink-700 bg-[#3A2CAC]"
+          titleClassName="text-center md:text-left text-[1.75rem] font-antique-olive font-light mb-2 sm:mb-4"
+          descriptionClassName="text-center md:text-left font-fkGrotesk md:mr-[10vw] lg:mr-[15vw]"
+          containerClassName="col-span-1 md:col-span-3 bg-indigo-800/90 dark:bg-[#3A2CAC]"
         />
         <WobbleCard
           children={[
             "Organize Files Better",
             "Cleaner folders, effortless file management",
           ]}
-          titleClassName="text-left text-[1.75rem] font-antique-olive font-light mb-4"
-          descriptionClassName="text-left font-fkGrotesk  mr-[20vw]"
-          containerClassName="col-span-3 bg-violet-400 bg-[#1F3C90]"
+          titleClassName="text-center md:text-left text-[1.75rem] font-antique-olive font-light mb-4"
+          descriptionClassName="text-center md:text-left font-fkGrotesk md:mr-[20vw]"
+          containerClassName="col-span-1 md:col-span-3 bg-blue-800/90 dark:bg-[#1F3C90]"
         />
         <WobbleCard
           children={[
             "Reduce Visual Clutter",
             "Distraction-free interface, only what you need",
           ]}
-          titleClassName="text-left text-[1.75rem] font-antique-olive font-light mb-4"
-          descriptionClassName="text-left font-fkGrotesk"
-          containerClassName="col-span-2 bg-violet-800"
+          titleClassName="text-center md:text-left text-[1.75rem] font-antique-olive font-light mb-4"
+          descriptionClassName="text-center md:text-left font-fkGrotesk"
+          containerClassName="col-span-1 md:col-span-2 bg-violet-800/80 dark:bg-violet-800"
         />
       </div>
     </div>

@@ -1,17 +1,36 @@
+import { useEffect, useState } from "react";
 import { InfiniteMovingCards } from "./ui/infinite-moving-cards";
 
 export function ReviewsPage() {
+  
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    };
+    
+    // Check initially
+    checkDarkMode();
+    
+    // Watch for class changes
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    return () => observer.disconnect();
+  }, []); 
+  
   return (
     <div
-      className="h-[100vh] w-full flex flex-col items-center justify-start pt-[18vh]"
-      style={{
-        background:
-          "linear-gradient(225deg, rgba(0,0,0,0.5) 0%, rgba(8, 8, 28, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%), linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(13, 13, 68, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%)",
-      }}
+      className={`h-[120vh] sm:h-[100vh] w-full flex flex-col items-center justify-start pt-[8vh] sm:pt-[18vh] ${isDarkMode ? 'reviewsPageGradient-dark' : 'bg-[#FFFEFE]'}`}
+
     >
-      <h1 className="text-gray-100 text-[2rem] font-antique-olive tracking-wide text-center">Most people barely use 30% of their Google Drive <br /> Because it's too hard to organize</h1>
+      <h1 className="px-12 sm:px-0 text-[2.03rem] sm:text-[2.3rem] text-neutral-900 dark:text-gray-100 font-antique-olive tracking-wide text-center">Most people barely use 30% of their Google Drive <br /> Because it's too hard to organize</h1>
       <hr className="mt-[3vh] mb-[1.5vh] h-[2px] dark:h-[1px] w-[20vw] bg-neutral-900/50 dark:bg-gray-500" />
-      <h6 className="text-gray-500 text-[0.95rem] mt-[2vh]">Google Drive's confusing interface leaves terabytes of storage unused</h6>
+      <h6 className="px-8 sm:px-0 text-center text-gray-700 dark:text-gray-500 text-[0.95rem] mt-[2vh] mb-12 sm:mb-8 md:mb-0 mx-4 sm:mx-0">Google Drive's confusing interface leaves terabytes of storage unused</h6>
       <div className="h-[27rem] rounded-md flex flex-col antialiased items-center justify-center relative overflow-hidden">
         <InfiniteMovingCards
           items={testimonials}

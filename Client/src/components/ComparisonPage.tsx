@@ -1,21 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ImageCompare from "./ImageCompare";
 import { FlipWords } from "./ui/flip-words";
 import { NavbarButton } from "./ui/resizable-navbar";
+import '../styles/gradients.css'
 
 export const ComparisonPage: React.FC = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+useEffect(() => {
+  const checkDarkMode = () => {
+    setIsDarkMode(document.documentElement.classList.contains('dark'));
+  };
+  
+  // Check initially
+  checkDarkMode();
+  
+  // Watch for class changes
+  const observer = new MutationObserver(checkDarkMode);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class']
+  });
+  
+  return () => observer.disconnect();
+}, []); 
   const handleConnectDrive = (): void => {
     window.location.href = "http://localhost:3000/auth/google";
   };
-
   return (
     //  pt-[13vh] flex-col
     <div
-    className="h-[100vh] w-full flex flex-col items-center justify-start pt-[14vh]"
-    style={{
-        background:
-        "linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(8, 8, 28, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%), linear-gradient(225deg, rgba(0,0,0,0.5) 0%, rgba(13, 13, 68, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%)",
-    }}
+    className={`h-[100vh] w-full flex flex-col items-center justify-start pt-[10vh] sm:pt-[14.9vh] ${isDarkMode ? 'comparisonPageGradient-dark' : 'bg-[#FFFEFE]'}`}
     id="imgCompare"
     >
       <div className="overflow-hidden">
@@ -26,16 +41,18 @@ export const ComparisonPage: React.FC = () => {
             "Your files, Finally Beatiful",
         ]}
         duration={2000}
-        className="mt-2 text-3xl mb-4 pr-1 font-antique-olive"
+        className="h-[6vh] sm:h-auto mt-2 text-3xl mb-5 sm:mb-4 pr-1 font-antique-olive text-center"
         />
       </div>
-      <hr className="mb-7 h-[2px] dark:h-[1px] w-[7vw] bg-neutral-900/50 dark:bg-gray-500" />
-      <ImageCompare id="hi" />
+      <hr className="mb-9 h-[2px] dark:h-[1px] w-[7vw] bg-neutral-900/50 dark:bg-gray-500" />
+      <div className="shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-3xl">
+        <ImageCompare id="hi"/>
+      </div>
 
       {/* CTA - more action-oriented */}
       <NavbarButton
         variant="gradient"
-        className="mt-8 scale-110 px-5"
+        className="mt-12 sm:mt-8 scale-135 sm:scale-115 px-5 shadow-md"
         onClick={handleConnectDrive}
         >
         Join us Today

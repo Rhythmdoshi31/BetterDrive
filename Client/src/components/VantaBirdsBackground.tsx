@@ -7,7 +7,7 @@ const VantaBirdsBackground: React.FC = () => {
   useEffect(() => {
     const initVanta = () => {
       const isDark = document.documentElement.classList.contains("dark");
-      const backgroundColor = isDark ? 0xb0b14 : 0xfff3f3;
+      const backgroundColor = isDark ? 0xb0b14 : 0xFFFEFE;
 
       if (effectRef.current) effectRef.current.destroy();
 

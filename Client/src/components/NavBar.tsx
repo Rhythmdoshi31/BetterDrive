@@ -12,30 +12,50 @@ import {
   NavbarButton,
 } from "./ui/resizable-navbar"; // adjust path where you saved it
 
+const NavBar: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
-const NavBar : React.FC = () => {
-
-    const [isOpen, setIsOpen] = useState(false);
-
-  const items = [
-    { name: "Home", link: "#" },
-    { name: "Features", link: "#" },
-    { name: "Pricing", link: "#" },
-    { name: "Contact", link: "#" },
-  ];
+  // Smooth scroll function
+  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, link: string) => {
+    if (link.startsWith('#')) {
+      e.preventDefault();
+      const element = document.getElementById(link.slice(1));
+      if (element) {
+        element.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }
+  };
 
   const handleConnectDrive = (): void => {
     window.location.href = "http://localhost:3000/auth/google";
   };
-    
+
+  const items = [
+    { name: "Home", link: "#" },
+    { name: "Features", link: "#features" },
+    { name: "Pricing", link: "#pricing" },
+    { name: "Contact", link: "#contact" },
+  ];
+
   return (
     <>
-        <Navbar>
+      {/* Desktop Navbar */}
+      <Navbar>
         <NavBody>
           <NavbarLogo />
-          <NavItems items={items} />
+          <NavItems 
+            items={items.map(item => ({
+              ...item,
+              onClick: (e: React.MouseEvent<HTMLAnchorElement>) => handleSmoothScroll(e, item.link)
+            }))} 
+          />
           <div className="flex items-center justify-center gap-4 z-[60]">
-            <NavbarButton variant="gradient" onClick={handleConnectDrive} >Connect Drive</NavbarButton>
+            <NavbarButton variant="gradient" onClick={handleConnectDrive}>
+              Connect Drive
+            </NavbarButton>
             <Toggle />
           </div>
         </NavBody>
@@ -60,12 +80,19 @@ const NavBar : React.FC = () => {
                 key={i}
                 href={item.link}
                 className="block w-full px-4 py-2 text-gray-700 dark:text-gray-300"
-                onClick={() => setIsOpen(false)}
+                onClick={(e) => {
+                  handleSmoothScroll(e, item.link);
+                  setIsOpen(false); // Close mobile menu after clicking
+                }}
               >
                 {item.name}
               </a>
             ))}
-            <NavbarButton variant="dark" className="mt-4">
+            <NavbarButton 
+              variant="dark" 
+              className="mt-4"
+              onClick={handleConnectDrive}
+            >
               Connect Drive
             </NavbarButton>
           </MobileNavMenu>

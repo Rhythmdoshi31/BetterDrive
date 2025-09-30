@@ -1,0 +1,29 @@
+.comparisonPageGradient-dark {
+    background: linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(8, 8, 28, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%), linear-gradient(225deg, rgba(0,0,0,0.5) 0%, rgba(13, 13, 68, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%);
+}
+
+.cardsPage-dark {
+     background: linear-gradient(45deg, rgba(0,0,0,0.5) 0%, rgba(8, 8, 28, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%), linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(13, 13, 68, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%);
+}
+
+.reviewsPageGradient-dark {
+  background: linear-gradient(225deg, rgba(0,0,0,0.5) 0%, rgba(8, 8, 28, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%), linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(13, 13, 68, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%);  
+}
+
+.pricingPageGradient-dark {
+    background: linear-gradient(225deg, rgba(3, 12, 37,0.5) 0%, rgba(8, 8, 28, 0.5) 50%, rgba(0, 0, 0, 0.5) 100%), linear-gradient(45deg, rgba(3, 12, 37,0.5) 0%, rgba(13, 13, 68, 0.5) 50%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+.FAQsPage-dark {
+    background: linear-gradient(290deg, rgba(3, 12, 37, 0.5) 0%, rgba(8, 8, 28, 0.5) 50%, rgba(0, 0, 0, 0.5) 100%), linear-gradient(70deg, rgba(0, 0, 0, 0.5) 0%, rgba(13, 13, 68, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%);
+}
+ /* 
+ 1. ComparisonPage se useEffect n usestate uthake sare Pages me lgana hai
+ 
+ 2. Saare pages me gradients.css import karni hai
+
+ 3. Har page ka gradients gradent.css me dalna hai
+
+ 4. className me check karna hai darkMode ke liye nahi to #FFFEFE lga dena hai bg me
+
+ */

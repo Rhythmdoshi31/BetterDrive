@@ -61,13 +61,13 @@ export const WobbleCard = ({
               : "translate3d(0px, 0px, 0) scale3d(1, 1, 1)",
             transition: "transform 0.1s ease-out",
           }}
-          className={cn("h-full px-4 pt-12 pb-18 sm:px-10", className)}
+          className={cn("h-full px-4 pt-8 sm:pt-8 lg:pt-10 xl:pt-12 pb-18 sm:px-10", className)}
         >
           <Noise />
           <h3 className={cn("text-2xl font-bold text-white", titleClassName)}>
             {title}
           </h3>
-          <p className={cn("text-base text-white/80 mt-2 mr-40", descriptionClassName)}>
+          <p className={cn("text-base text-white/80 mt-2 mr-0 lg:mr-10 xl:mr-40", descriptionClassName)}>
             {description}
           </p>
         </motion.div>

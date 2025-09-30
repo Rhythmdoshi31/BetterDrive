@@ -12,7 +12,7 @@ export default function ImageCompare({id} : ImageCompareProps) {
         secondImage="https://assets.aceternity.com/code-solution.png"
         firstImageClassName="object-cover object-left-top"
         secondImageClassname="object-cover object-left-top"
-        className="h-[250px] w-[200px] md:h-[55vh] md:w-[55vw]"
+        className="h-[55vh] w-[75vw] sm:h-[50vh] sm:w-[70vw] md:h-[55vh] md:w-[60vw]  lg:h-[55vh] lg:w-[55vw]"
         slideMode="hover"
       />
     </div>

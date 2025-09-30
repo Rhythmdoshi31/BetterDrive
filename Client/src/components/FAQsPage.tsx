@@ -1,23 +1,42 @@
+import { useEffect, useState } from "react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
+import '../styles/gradients.css'
 
 export const FAQsPage = () => {
+
+const [isDarkMode, setIsDarkMode] = useState(false);
+  
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    };
+    
+    // Check initially
+    checkDarkMode();
+    
+    // Watch for class changes
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div
-      className="h-[110vh] w-full flex flex-col items-center justify-start pt-[17vh]"
-      style={{
-        background:
-          "linear-gradient(290deg, rgba(3, 12, 37, 0.5) 0%, rgba(8, 8, 28, 0.5) 50%, rgba(0, 0, 0, 0.5) 100%), linear-gradient(70deg, rgba(0, 0, 0, 0.5) 0%, rgba(13, 13, 68, 0.5) 50%, rgba(3, 12, 37, 0.5) 100%)",
-      }}
+      className={`h-fit w-full flex flex-col items-center justify-start pt-[11vh] sm:pt-[17vh] pb-[20vh] ${isDarkMode ? 'FAQsPage-dark' : 'bg-[#FFFEFE]'}`}
     >
-        <h1 className="text-4xl pr-1 text-white font-antique-olive">Frequently Asked Questions -</h1>
-      <hr className="mt-[2vh] mb-[13vh] h-[2px] dark:h-[1px] w-[7vw] bg-neutral-900/50 dark:bg-gray-600" />
+        <h1 className={`text-center text-[2.5rem] pr-1 font-antique-olive dark:text-gray-100 text-neutral-800`}>Frequently Asked Questions</h1>
+      <hr className="mt-[2vh] mb-[10vh] h-[2px] dark:h-[1px] w-[7vw] bg-neutral-900/50 dark:bg-gray-600" />
 
-      <Accordion className="scale-[1.3]" type="single" collapsible>
+      <Accordion className="w-[70vw] md:w-[60vw] lg:w-[50vw] scale-[1.3] bg-white dark:bg-transparent p-4 rounded-xl" type="single" collapsible>
   {faqData.map((faq) => (
     <AccordionItem key={faq.id} value={faq.id}>
       <AccordionTrigger>{faq.question}</AccordionTrigger>

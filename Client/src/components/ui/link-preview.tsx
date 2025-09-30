@@ -31,8 +31,6 @@ export const LinkPreview = ({
   className,
   width = 200,
   height = 125,
-  quality = 50,
-  layout = "fixed",
   isStatic = false,
   imageSrc = "",
 }: LinkPreviewProps) => {
@@ -95,7 +93,7 @@ export const LinkPreview = ({
       >
         <HoverCardPrimitive.Trigger
           onMouseMove={handleMouseMove}
-          className={cn("!text-sky-500 hover:!text-sky-600 transition-colors", className)}
+          className={cn(" transition-colors", className)}
           href={url}
         >
           {children}
