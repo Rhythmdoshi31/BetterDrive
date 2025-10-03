@@ -9,6 +9,13 @@ export interface UserData {
   refreshToken?: string;
 }
 
+export interface Waitlist {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: Date;
+}
+
 export interface AuthenticatedUser {
   id: string;
   googleId: string;

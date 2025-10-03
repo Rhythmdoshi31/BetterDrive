@@ -32,10 +32,11 @@ export const Footer = () => {
               className="relative z-20 mr-4 flex items-center justify-center md:justify-start space-x-2 py-1 text-[2rem] md:text-[3rem] lg:text-[4rem] font-normal text-black"
             >
               <img
-                src="https://assets.aceternity.com/logo-dark.png"
+                src="BDlogo.webp"
                 alt="logo"
                 width={48}
                 height={48}
+                className="scale-120 mr-2 bg-black rounded-md"
               />
               <span className="font-medium text-black dark:text-white">
                 BetterDrive

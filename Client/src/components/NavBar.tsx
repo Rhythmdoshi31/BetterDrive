@@ -30,11 +30,12 @@ const NavBar: React.FC = () => {
   };
 
   const handleConnectDrive = (): void => {
-    window.location.href = "http://localhost:3000/auth/google";
+    // window.location.href = "http://localhost:3000/auth/google";
+    window.location.href = "http://localhost:5173/vip-list"
   };
 
   const items = [
-    { name: "Home", link: "#" },
+    { name: "Home", link: "#home" },
     { name: "Features", link: "#features" },
     { name: "Pricing", link: "#pricing" },
     { name: "Contact", link: "#contact" },
@@ -54,7 +55,7 @@ const NavBar: React.FC = () => {
           />
           <div className="flex items-center justify-center gap-4 z-[60]">
             <NavbarButton variant="gradient" onClick={handleConnectDrive}>
-              Connect Drive
+              Join VIP List {/* Connect Drive */}
             </NavbarButton>
             <Toggle />
           </div>

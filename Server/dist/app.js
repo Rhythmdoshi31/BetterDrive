@@ -15,6 +15,7 @@ require("./lib/passport");
 const auth_1 = __importDefault(require("./routes/auth"));
 const google_1 = __importDefault(require("./routes/google"));
 const redis_1 = require("./lib/redis");
+const waitlist_1 = __importDefault(require("./routes/waitlist"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 // Middleware
@@ -39,6 +40,7 @@ app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 app.use('/auth', auth_1.default);
 app.use('/api/google', google_1.default);
+app.use('/api/waitlist', waitlist_1.default);
 const PORT = parseInt(process.env.PORT || '3000');
 const startServer = async () => {
     try {

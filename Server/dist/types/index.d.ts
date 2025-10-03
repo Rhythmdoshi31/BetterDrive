@@ -7,6 +7,12 @@ export interface UserData {
     accessToken: string;
     refreshToken?: string;
 }
+export interface Waitlist {
+    id: string;
+    name: string;
+    email: string;
+    createdAt: Date;
+}
 export interface AuthenticatedUser {
     id: string;
     googleId: string;

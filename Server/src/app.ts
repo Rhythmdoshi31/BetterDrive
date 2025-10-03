@@ -12,6 +12,7 @@ import './lib/passport';
 import authRoutes from './routes/auth';
 import googleRoutes from './routes/google';
 import { initRedis } from './lib/redis';
+import waitlistRoutes from './routes/waitlist';
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ app.use(passport.session());
 
 app.use('/auth', authRoutes);
 app.use('/api/google', googleRoutes);
+app.use('/api/waitlist', waitlistRoutes);
 
 const PORT: number = parseInt(process.env.PORT || '3000');
 

@@ -25,7 +25,8 @@ useEffect(() => {
   return () => observer.disconnect();
 }, []); 
   const handleConnectDrive = (): void => {
-    window.location.href = "http://localhost:3000/auth/google";
+    // window.location.href = "http://localhost:3000/auth/google";
+    window.location.href = "http://localhost:5173/vip-list";
   };
   return (
     //  pt-[13vh] flex-col
