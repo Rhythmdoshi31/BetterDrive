@@ -32,7 +32,7 @@ export const CardsPage: React.FC = () => {
       </h1>
       <hr className="mt-[2.4vh] mb-[-1.4vh] h-[2px] dark:h-[1px] w-[7vw] bg-neutral-900/50 dark:bg-gray-500" />
 
-      <div className=" h-[118svh] min-[480px]:h-[100svh] sm:h-[100svh] md:h-[75svh] lg:h-[65svh] grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-4 px-[15svw] pt-[8svh]">
+      <div className=" h-[140svh] min-[480px]:h-[100svh] sm:h-[100svh] md:h-[75svh] lg:h-[65svh] grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-4 px-[15svw] pt-[8svh]">
         <WobbleCard
           children={[
             "Find Files Faster",
