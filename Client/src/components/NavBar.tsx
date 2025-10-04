@@ -94,7 +94,7 @@ const NavBar: React.FC = () => {
               className="mt-4"
               onClick={handleConnectDrive}
             >
-              Connect Drive
+              Join VIP List {/* Connect Drive */}
             </NavbarButton>
           </MobileNavMenu>
         </MobileNav>

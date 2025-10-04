@@ -23,13 +23,13 @@ export const Footer = () => {
   }, []); 
 
   return (
-    <div id="contact" className={`h-auto min-h-[60vh] w-full flex flex-col md:flex-row items-center justify-center dark:bg-[#000000] dark:border-t-neutral-700/50 bg-[#FFFCFC] border-t-neutral-300/50 border-[1px]`}>
+    <div id="contact" className={`h-auto min-h-[60vh] pb-8 md:pb-0 w-full flex flex-col md:flex-row items-center justify-center dark:bg-[#000000] dark:border-t-neutral-700/50 bg-[#FFFCFC] border-t-neutral-300/50 border-[1px]`}>
       <div className="flex flex-col h-auto w-full md:h-full md:w-[40%] lg:w-[50%] items-center md:items-start justify-end">
         <div className="px-[6vw] md:pl-[6vw] lg:pl-[10vw] md:pr-0 h-auto pt-8 pb-4 md:h-[30vh] flex flex-col justify-center md:justify-end text-center md:text-left">
           <div>
             <a
               href="#"
-              className="relative z-20 mr-4 flex items-center justify-center md:justify-start space-x-2 py-1 text-[2rem] md:text-[3rem] lg:text-[4rem] font-normal text-black"
+              className="relative z-20 mr-4 flex items-center justify-center md:justify-start space-x-2 py-1 mb-4 md:mb-0 text-[2rem] md:text-[3rem] lg:text-[4rem] font-normal text-black"
             >
               <img
                 src="BDlogo.webp"

@@ -31,7 +31,7 @@ useEffect(() => {
   return (
     //  pt-[13vh] flex-col
     <div
-    className={`h-[100vh] w-full flex flex-col items-center justify-start pt-[10vh] sm:pt-[14.9vh] ${isDarkMode ? 'comparisonPageGradient-dark' : 'bg-[#FFFEFE]'}`}
+    className={`min-h-fit max-h-[100svh] w-full flex flex-col items-center justify-start py-[15svh] sm:pb-[10vh] sm:pt-[12.9vh] ${isDarkMode ? 'comparisonPageGradient-dark' : 'bg-[#FFFEFE]'}`}
     id="imgCompare"
     >
       <div className="overflow-hidden">
@@ -42,10 +42,10 @@ useEffect(() => {
             "Your files, Finally Beatiful",
         ]}
         duration={2000}
-        className="h-[6vh] sm:h-auto mt-2 text-3xl mb-5 sm:mb-4 pr-1 font-antique-olive text-center"
+        className="h-[6vh] sm:h-auto mt-2 text-3xl mb-6 sm:mb-4 pr-1 font-antique-olive text-center"
         />
       </div>
-      <hr className="mb-9 h-[2px] dark:h-[1px] w-[7vw] bg-neutral-900/50 dark:bg-gray-500" />
+      <hr className="mb-16 sm:mb-12 h-[2px] dark:h-[1px] w-[7vw] bg-neutral-900/50 dark:bg-gray-500" />
       <div className="shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-3xl">
         <ImageCompare id="hi"/>
       </div>
@@ -53,7 +53,7 @@ useEffect(() => {
       {/* CTA - more action-oriented */}
       <NavbarButton
         variant="gradient"
-        className="mt-12 sm:mt-8 scale-135 sm:scale-115 px-5 shadow-md"
+        className="mt-16 sm:mt-8 scale-135 sm:scale-115 px-5 shadow-md"
         onClick={handleConnectDrive}
         >
         Join us Today

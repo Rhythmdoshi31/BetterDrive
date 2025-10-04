@@ -24,6 +24,11 @@ export const PricingPage = () => {
       return () => observer.disconnect();
     }, []); 
 
+      const handleConnectDrive = (): void => {
+    // window.location.href = "http://localhost:3000/auth/google";
+    window.location.href = "https://better-drive-tau.vercel.app/vip-list"
+  };
+
   const pricingPlans = [
     {
       id: "free-trial",
@@ -58,7 +63,7 @@ export const PricingPage = () => {
 
   return (
     <div id="pricing"
-      className={`h-fit w-full flex flex-col items-center justify-start pt-[14vh] pb-[8vh] ${isDarkMode ? 'pricingPageGradient-dark' : 'bg-[#FFFEFE]'} `}
+      className={`h-fit w-full flex flex-col items-center justify-start pt-[14svh] pb-[8svh] ${isDarkMode ? 'pricingPageGradient-dark' : 'bg-[#FFFEFE]'} `}
     >
       <h1 className={`text-[2.5rem] pr-1 dark:text-gray-100 text-neutral-900 font-antique-olive`}>Pricing</h1>
       <hr className="mt-[1vh] mb-[1.5vh] h-[2px] dark:h-[1px] w-[7vw] bg-neutral-900 dark:bg-gray-600" />
@@ -67,7 +72,7 @@ export const PricingPage = () => {
         {pricingPlans.map((plan) => (
           <div
             key={plan.id}
-            className="w-[85vw] sm:w-[50vw] md:w-[37vw] lg:w-[30vw] xl:w-[23vw] h-[60vh] md:h-[65vh] bg-[#FCFCFC] hover:bg-[#F5F5F5] dark:bg-neutral-900/90 dark:hover:bg-[#202124] border border-neutral-300 dark:border-gray-800 rounded-2xl p-6 pt-9 flex flex-col justify-between shadow-md hover:shadow-lg"
+            className="w-[85vw] sm:w-[50vw] md:w-[37vw] lg:w-[30vw] xl:w-[23vw] min-h-[60svh] md:h-[65svh] bg-[#FCFCFC] hover:bg-[#F5F5F5] dark:bg-neutral-900/90 dark:hover:bg-[#202124] border border-neutral-300 dark:border-gray-800 rounded-2xl p-6 pt-9 flex flex-col justify-between shadow-md hover:shadow-lg"
           >
             <div>
               <h2 className="font-antique-olive text-[1.9rem] sm:text-3xl text-neutral-900 dark:text-white mb-3">
@@ -94,14 +99,14 @@ export const PricingPage = () => {
 
             <div className="sm:h-24 mb-4">
               <button
-                className={`w-full ${plan.buttonColor} text-white font-semibold py-3 px-8 rounded-lg transition-colors mb-5`}
+                onClick={handleConnectDrive} className={`w-full ${plan.buttonColor} text-white font-semibold py-3 px-8 rounded-lg transition-colors mb-5`}
               >
                 {plan.buttonText}
               </button>
               <p className="font-fkGrotesk text-[0.78rem] sm:text-xs text-neutral-500 dark:text-neutral-400 text-left">
                 Questions?{" "}
                 <span className="pl-[1px] text-green-600 dark:text-green-700 font-semibold hover:underline cursor-pointer">
-                  Chat with us
+                  <a href="mailto:contact@betterdrive.com">Chat with us</a>
                 </span>
                 <br />
                 <span className="mt-1 sm:mt-2 block">
