@@ -5,7 +5,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import type { AxiosResponse } from "axios";
 import type { DriveFile } from "../types";
 import { getFileTypeStyle } from "../utils/fileTypeHelper";
-import HorizontalStorageBar from "./StorageBar.tsx";
+import HorizontalStorageBar from "./StorageBar";
 import FilePreviewModal from "./FilePreviewModal";
 import {
   DotsSixIcon,
