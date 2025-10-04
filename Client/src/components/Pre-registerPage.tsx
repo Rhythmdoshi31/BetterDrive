@@ -3,7 +3,7 @@ import LightRays from "./ui/LightRays";
 import { NavbarButton, NavbarLogo } from "./ui/resizable-navbar";
 const PreregisterPage: React.FC = () => {
   const handleHome = () => {
-    window.location.href = "http://localhost:5173"
+    window.location.href = "https://betterdrive-production.up.railway.app/"
   }
   return (
     <div className="relative w-screen h-screen overflow-hidden">
