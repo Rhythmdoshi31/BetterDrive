@@ -19,12 +19,12 @@ dotenv.config();
 
 const app: Application = express();
 
-// Middleware
+// ✅ ONLY basic middleware that doesn't need Redis
 app.use(cors({
   origin: [
-    'http://localhost:3000',                    // Local development
-    'https://better-drive-tau.vercel.app',      // Your Vercel deployment
-    'https://betterdrive.rhythmdoshi.site'      // Your custom domain (if you set it up)
+    'http://localhost:3000',
+    'https://better-drive-tau.vercel.app',
+    'https://betterdrive.rhythmdoshi.site'
   ],
   credentials: true
 }));
@@ -32,20 +32,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-// Session configuration
-app.use(session({
-  secret: process.env.SESSION_SECRET!,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 24 * 60 * 60 * 1000
-  }
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-
+// ✅ Health route (no dependencies)
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
@@ -54,9 +41,8 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.use('/auth', authRoutes);
-app.use('/api/google', googleRoutes);
-app.use('/api/waitlist', waitlistRoutes);
+// ✅ REMOVE ALL SESSION/PASSPORT/ROUTES FROM HERE
+// They will be added inside startServer() after Redis connects
 
 const PORT: number = parseInt(process.env.PORT || '3000');
 
@@ -66,12 +52,12 @@ const startServer = async (): Promise<void> => {
     await initRedis();
     console.log('🚀 Redis Cloud Connected');
     
-    // ✅ 2. Setup session AFTER Redis is connected
+    // ✅ 2. Setup session AFTER Redis is connected (ONLY HERE)
     app.use(session({
       store: new RedisStore({ 
         client: redisClient,
         prefix: 'betterdrive:sess:',
-        ttl: 24 * 60 * 60 // 24 hours in seconds
+        ttl: 24 * 60 * 60
       }),
       secret: process.env.SESSION_SECRET || 'fallback-secret',
       resave: false,
@@ -83,14 +69,16 @@ const startServer = async (): Promise<void> => {
       }
     }));
 
-    // ✅ 3. Initialize passport AFTER session
+    // ✅ 3. Initialize passport AFTER session (ONLY HERE)
     app.use(passport.initialize());
     app.use(passport.session());
 
-    // ✅ 4. Add routes AFTER everything is set up
+    // ✅ 4. Add routes AFTER everything is set up (ONLY HERE)
     app.use('/auth', authRoutes);
     app.use('/api/google', googleRoutes);
     app.use('/api/waitlist', waitlistRoutes);
+
+    console.log('✅ Session, passport, and routes configured');
 
     // ✅ 5. Start server
     app.listen(PORT, '0.0.0.0', () => {
