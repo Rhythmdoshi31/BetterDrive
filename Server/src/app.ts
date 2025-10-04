@@ -52,7 +52,11 @@ app.get('/test', (req, res) => {
 // ✅ Waitlist routes (no session needed)
 app.use('/api/waitlist', waitlistRoutes);
 
-const PORT: number = parseInt(process.env.PORT || '3000');
+const PORT: number = process.env.PORT
+  ? parseInt(process.env.PORT)
+  : (() => {
+      throw new Error('PORT environment variable is not set');
+    })();
 
 const setupSessionAndAuth = async (): Promise<void> => {
   // ✅ Connect Redis first
