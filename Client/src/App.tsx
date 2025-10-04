@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Home from "./components/Home";
 import StarredFiles from "./pages/Starred";
@@ -33,6 +33,7 @@ const App: React.FC = () => {
           <Route path="/trash" element={<TrashFiles />} />
           <Route path="/folders" element={<FoldersPage />} />
           <Route path="/vip-list" element={<PreregisterPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </ div>
