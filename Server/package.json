@@ -2,45 +2,51 @@
   "name": "server",
   "version": "1.0.0",
   "main": "dist/app.js",
+  "engines": {
+    "node": ">=18.0.0 <21.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "build": "prisma generate && npx tsc",
     "start": "node dist/app.js",
     "dev": "npx prisma generate && npx tsc && nodemon dist/app.js",
-    "dev:watch": "npx prisma generate && npx nodemon --exec npx ts-node src/app.ts"
+    "dev:watch": "npx prisma generate && npx nodemon --exec npx ts-node src/app.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "^6.13.0",
+    "@prisma/client": "^5.19.1",
     "@types/jsonwebtoken": "^9.0.10",
-    "axios": "^1.11.0",
-    "bcryptjs": "^3.0.2",
+    "axios": "^1.7.7",
+    "bcrypt": "^6.0.0",
     "connect-redis": "^7.1.1",
-    "cookie-parser": "^1.4.7",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
-    "express": "^5.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "express-session": "^1.18.2",
-    "googleapis": "^155.0.0",
+    "googleapis": "^144.0.0",
     "jsonwebtoken": "^9.0.2",
-    "multer": "^2.0.2",
-    "nodemailer": "^7.0.6",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.15",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
-    "prisma": "^6.13.0",
-    "redis": "^5.8.3"
+    "prisma": "^5.19.1",
+    "redis": "^4.7.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
+    "@types/express": "^4.17.21",
     "@types/express-session": "^1.18.2",
-    "@types/multer": "^2.0.0",
-    "@types/node": "^24.3.0",
-    "@types/nodemailer": "^7.0.2",
+    "@types/multer": "^1.4.12",
+    "@types/node": "20.16.5",
+    "@types/nodemailer": "^6.4.16",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.16",
     "@types/redis": "^4.0.11",
-    "nodemon": "^3.1.10",
+    "nodemon": "^3.1.4",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.6.2"
   }
 }
