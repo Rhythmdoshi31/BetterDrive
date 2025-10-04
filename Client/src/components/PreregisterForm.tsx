@@ -17,7 +17,7 @@ export function SignupFormDemo() {
     fetchWaitlistCount();
   }, []);
 
-  const fetchWaitlistCount = async () => {
+  const fetchWaitlistCount = async () => { 
     try {
       const response = await fetch('https://betterdrive-production.up.railway.app/api/waitlist/count');
       const data = await response.json();
