@@ -193,7 +193,7 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
         const formData = new FormData();
         formData.append('file', uploadFile.file);
 
-        const response = await axios.post('/api/google/upload', formData, {
+        await axios.post('/api/google/upload', formData, {
           timeout: 15 * 60 * 1000, // 15 minutes timeout for large files
           headers: {
             'Content-Type': 'multipart/form-data',

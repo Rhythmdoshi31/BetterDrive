@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { createPortal } from "react-dom";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -235,7 +235,7 @@ const FileListView: React.FC<FileListViewProps> = ({
         </button>
 
         {/* Render FILTERED breadcrumb path */}
-        {filteredBreadcrumb.map((folder, index) => (
+        {filteredBreadcrumb.map((folder) => (
           <React.Fragment key={folder.id}>
             <CaretRightIcon size={14} className="text-gray-500" />
             <button
@@ -562,7 +562,7 @@ const FileListView: React.FC<FileListViewProps> = ({
       {/* File Rows */}
       {allFiles.length > 0 ? (
         allFiles.map((file) => {
-          const { stripColor, iconColor, IconComponent } = getFileTypeStyle(
+          const { iconColor, IconComponent } = getFileTypeStyle(
             file.mimeType
           );
           const isFolder =

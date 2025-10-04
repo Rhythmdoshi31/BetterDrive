@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { LinkPreview } from "./ui/link-preview";
 
 export const Footer = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  
+  const [_isDarkMode, setIsDarkMode] = useState(false);
+
   useEffect(() => {
     const checkDarkMode = () => {
       setIsDarkMode(document.documentElement.classList.contains('dark'));
