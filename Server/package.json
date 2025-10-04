@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/app.js",
   "scripts": {
-    "build": "npx tsc",
+    "build": "prisma generate && npx tsc",
     "start": "node dist/app.js",
     "dev": "npx prisma generate && npx tsc && nodemon dist/app.js",
     "dev:watch": "npx prisma generate && npx nodemon --exec npx ts-node src/app.ts"
