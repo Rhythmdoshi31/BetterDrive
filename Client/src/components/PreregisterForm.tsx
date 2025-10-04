@@ -5,7 +5,7 @@ import { Input } from "./ui/input";
 import { cn } from "../lib/utils";
 
 export function SignupFormDemo() {
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState(7);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);

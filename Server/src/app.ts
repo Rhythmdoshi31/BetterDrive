@@ -20,7 +20,11 @@ const app: Application = express();
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173', // React frontend URL
+  origin: [
+    'http://localhost:3000',                    // Local development
+    'https://better-drive-tau.vercel.app',      // Your Vercel deployment
+    'https://betterdrive.rhythmdoshi.site'      // Your custom domain (if you set it up)
+  ],
   credentials: true
 }));
 app.use(express.json());
