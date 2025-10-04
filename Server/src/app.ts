@@ -17,7 +17,10 @@ dotenv.config();
 
 const app: Application = express();
 
-// Apply helmet FIRST (before rate limiting)
+// Trust proxy - MUST be first (Railway/Vercel are behind proxies)
+app.set('trust proxy', 1);
+
+// Apply helmet SECOND
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -25,9 +28,9 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'"],
       scriptSrc: [
         "'self'",
-        "'unsafe-inline'", // Needed for inline scripts
-        "https://cdnjs.cloudflare.com", // Three.js
-        "https://cdn.jsdelivr.net" // Vanta.js
+        "'unsafe-inline'",
+        "https://cdnjs.cloudflare.com",
+        "https://cdn.jsdelivr.net"
       ],
       imgSrc: ["'self'", "data:", "https:"],
       connectSrc: ["'self'", "https://betterdrive.rhythmdoshi.site"],
@@ -37,10 +40,10 @@ app.use(helmet({
       frameSrc: ["'none'"],
     },
   },
-  crossOriginEmbedderPolicy: false, // Needed for external resources
+  crossOriginEmbedderPolicy: false,
 }));
 
-// Apply global rate limiting SECOND
+// Apply global rate limiting THIRD
 app.use(globalLimiter);
 
 // Middleware
@@ -96,6 +99,7 @@ const setupSessionAndAuth = async (): Promise<void> => {
     secret: process.env.SESSION_SECRET || 'fallback-secret',
     resave: false,
     saveUninitialized: false,
+    proxy: true, // Trust the proxy
     cookie: {
       secure: process.env.NODE_ENV === 'production',
       maxAge: 24 * 60 * 60 * 1000,
@@ -126,6 +130,7 @@ const startServer = async (): Promise<void> => {
       console.log(`✅ Waitlist API: http://${HOST}:${PORT}/api/waitlist/count`);
       console.log(`🛡️ Rate limiting enabled`);
       console.log(`🛡️ Helmet security headers enabled`);
+      console.log(`🔒 Trust proxy enabled`);
     });
     
   } catch (error: unknown) {
