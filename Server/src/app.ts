@@ -10,15 +10,44 @@ import googleRoutes from './routes/google';
 import { initRedis, redisClient } from './lib/redis';
 import waitlistRoutes from './routes/waitlist';
 import RedisStore from 'connect-redis';
+import { globalLimiter, authLimiter, waitlistLimiter } from './middleware/rateLimiter';
+import helmet from 'helmet';
 
 dotenv.config();
 
 const app: Application = express();
 
+// Apply helmet FIRST (before rate limiting)
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'", // Needed for inline scripts
+        "https://cdnjs.cloudflare.com", // Three.js
+        "https://cdn.jsdelivr.net" // Vanta.js
+      ],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "https://betterdrive.rhythmdoshi.site"],
+      fontSrc: ["'self'", "https:", "data:"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'none'"],
+    },
+  },
+  crossOriginEmbedderPolicy: false, // Needed for external resources
+}));
+
+// Apply global rate limiting SECOND
+app.use(globalLimiter);
+
 // Middleware
 app.use(cors({
   origin: [
     'http://localhost:3000',
+    'http://localhost:5173',
     'https://better-drive-tau.vercel.app',
     'https://betterdrive.rhythmdoshi.site'
   ],
@@ -27,16 +56,18 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes without sessions
+// Health routes (no rate limiting needed)
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     timestamp: new Date().toISOString(),
-    redis: redisClient.isOpen ? 'connected' : 'disconnected'
+    redis: redisClient.isOpen ? 'connected' : 'disconnected',
+    uptime: process.uptime()
   });
 });
 
@@ -44,7 +75,8 @@ app.get('/test', (req, res) => {
   res.json({ message: 'Server is working!' });
 });
 
-app.use('/api/waitlist', waitlistRoutes);
+// Apply specific rate limiter to waitlist
+app.use('/api/waitlist', waitlistLimiter, waitlistRoutes);
 
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : (() => {
   throw new Error('PORT environment variable is not set');
@@ -67,14 +99,16 @@ const setupSessionAndAuth = async (): Promise<void> => {
     cookie: {
       secure: process.env.NODE_ENV === 'production',
       maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: true
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     }
   }));
 
   app.use(passport.initialize());
   app.use(passport.session());
-
-  app.use('/auth', authRoutes);
+  
+  // Apply auth rate limiter to auth routes
+  app.use('/auth', authLimiter, authRoutes);
   app.use('/api/google', googleRoutes);
 
   console.log('✅ Session, passport, and auth routes configured');
@@ -90,6 +124,8 @@ const startServer = async (): Promise<void> => {
       console.log(`✅ Health check: http://${HOST}:${PORT}/health`);
       console.log(`✅ Test endpoint: http://${HOST}:${PORT}/test`);
       console.log(`✅ Waitlist API: http://${HOST}:${PORT}/api/waitlist/count`);
+      console.log(`🛡️ Rate limiting enabled`);
+      console.log(`🛡️ Helmet security headers enabled`);
     });
     
   } catch (error: unknown) {
@@ -104,6 +140,20 @@ const startServer = async (): Promise<void> => {
     });
   }
 };
+
+// Global error handler for routes (must be after all routes)
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('🚨 Route Error:', err);
+  
+  const message = process.env.NODE_ENV === 'production' 
+    ? 'Internal Server Error' 
+    : err.message;
+  
+  res.status(500).json({ 
+    success: false,
+    error: message 
+  });
+});
 
 // Error handlers
 process.on('unhandledRejection', (reason, promise) => {
@@ -130,12 +180,6 @@ process.on('SIGINT', () => {
     redisClient.quit();
   }
   process.exit(0);
-});
-
-// Global error handler for routes
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('🚨 Route Error:', err);
-  res.status(500).json({ error: 'Internal Server Error' });
 });
 
 startServer();
