@@ -11,18 +11,21 @@ const client = (0, redis_1.createClient)({
     }
 });
 exports.redisClient = client;
-client.on('error', err => console.log('Redis Client Error', err));
+// Error handling
+client.on('error', (err) => {
+    console.error('Redis Client Error:', err);
+});
 client.on('connect', () => {
     console.log('Connected to Redis');
 });
 client.on('ready', () => {
     console.log('✅ Redis Client Ready');
 });
+// Connection function
 const initRedis = async () => {
     if (!client.isOpen) {
         await client.connect();
     }
-    return client;
 };
 exports.initRedis = initRedis;
 //# sourceMappingURL=redis.js.map

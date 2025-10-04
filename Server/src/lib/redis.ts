@@ -10,21 +10,25 @@ const client: RedisClientType = createClient({
     }
 });
 
-client.on('error', err => console.log('Redis Client Error', err));
+// Error handling
+client.on('error', (err) => {
+    console.error('Redis Client Error:', err);
+});
 
 client.on('connect', () => {
-  console.log('Connected to Redis');
+    console.log('Connected to Redis');
 });
 
 client.on('ready', () => {
-  console.log('✅ Redis Client Ready');
+    console.log('✅ Redis Client Ready');
 });
 
-export const initRedis = async (): Promise<RedisClientType> => {
+// Connection function
+export const initRedis = async (): Promise<void> => {
     if (!client.isOpen) {
-    await client.connect();
-  }
-  return client;
+        await client.connect();
+    }
 };
 
-export { client as redisClient};
+// Export client
+export { client as redisClient };
