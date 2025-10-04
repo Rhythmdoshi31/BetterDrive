@@ -51,13 +51,13 @@ app.use('/api/waitlist', waitlistRoutes);
 
 const PORT: number = parseInt(process.env.PORT || '3000');
 
+// Add this at the END of your app.ts file
 const startServer = async (): Promise<void> => {
   try {
-    // Connect to Redis Cloud
     await initRedis();
     console.log('🚀 Redis Cloud Connected');
     
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`🔥 Server running on port ${PORT}`);
     });
   } catch (error: unknown) {
@@ -66,4 +66,23 @@ const startServer = async (): Promise<void> => {
   }
 };
 
+// ✅ ADD THESE ERROR HANDLERS
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('🚨 Unhandled Promise Rejection:', reason);
+  console.error('Promise:', promise);
+  // Don't crash - just log the error
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('🚨 Uncaught Exception:', error.stack);
+  // Don't crash - just log the error
+});
+
+// Handle graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('📤 SIGTERM received, shutting down gracefully');
+  process.exit(0);
+});
+
 startServer();
+
