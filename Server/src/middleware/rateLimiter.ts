@@ -13,7 +13,7 @@ export const globalLimiter = rateLimit({
 // Strict limiter for auth endpoints
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 login attempts per 15 minutes
+  max: 10, // 5 login attempts per 15 minutes
   message: 'Too many login attempts, please try again later.',
   skipSuccessfulRequests: true, // Don't count successful requests
 });
@@ -21,6 +21,6 @@ export const authLimiter = rateLimit({
 // Waitlist limiter
 export const waitlistLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 3, // 3 signups per hour per IP
+  max: 10, // 3 signups per hour per IP
   message: 'Too many signup attempts, please try again later.',
 });
