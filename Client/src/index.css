@@ -25,20 +25,14 @@
   }
 }
 
-html, body {
+html, body, #root {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
   scroll-behavior: smooth;
   overflow-x: hidden;
-  overflow-y: scroll; /* only here */
-}
-
-#root {
-  height: 100%;
-  /* Remove overflow styles here */
-  overflow: visible;
+  overflow-y: hidden;
 }
 .scrollbar-hidden {
   scrollbar-width: none; /* Firefox */
