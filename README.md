@@ -1,1 +1,1 @@
-BetterDrive - betterdrive.rhythmdoshi.site
+BetterDrive - https://betterdrive.rhythmdoshi.site
