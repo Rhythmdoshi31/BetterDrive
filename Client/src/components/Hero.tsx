@@ -8,7 +8,7 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ className }) => {
   return (
-    <div id="home" className={`relative h-svh ${className || "overflow-y-hidden"} `}>
+    <div id="home" className={`relative h-svh ${className || ""} `}>
       <VantaBirdsBackground />
       <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-5 text-black dark:text-white">
         {/* Main headline - more impactful */}
