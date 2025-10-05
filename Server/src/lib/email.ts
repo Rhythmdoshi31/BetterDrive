@@ -15,7 +15,7 @@ export const sendWelcomeEmail = async ({
 }: WelcomeEmailOptions) => {
   try {
     const data = await resend.emails.send({
-      from: 'BetterDrive <onboarding@resend.dev>',
+      from: 'BetterDrive <noreply@send.rhythmdoshi.site>',
       to: [toEmail],
       subject: 'Welcome to BetterDrive Waitlist! 🎉',
       html: `
