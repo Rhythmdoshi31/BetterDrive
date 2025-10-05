@@ -25,27 +25,14 @@
   }
 }
 
-html, body {
-  height: 100%;          /* Full height */
-  width: 100%;           /* Full width */
+html, body, #root {
   margin: 0;
   padding: 0;
-  scroll-behavior: smooth;
-  overflow-x: hidden;    /* Never allow horizontal scroll */
-  overflow-y: scroll;    /* Always show vertical scrollbar, even if not needed */
-}
-
-#root {
   height: 100%;
   width: 100%;
-  /* DO NOT set overflow-y or overflow-x here! */
+  scroll-behavior: smooth;
+  overflow-x: hidden;
 }
-
-#home {
-  min-height: 100vh;     /* Take at least full viewport */
-  overflow: hidden;      /* Prevent its own scrollbar! */
-}
-
 .scrollbar-hidden {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
