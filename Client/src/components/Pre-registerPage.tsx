@@ -3,7 +3,7 @@ import LightRays from "./ui/LightRays";
 import { NavbarButton, NavbarLogo } from "./ui/resizable-navbar";
 const PreregisterPage: React.FC = () => {
   const handleHome = () => {
-    window.location.href = "https://better-drive-tau.vercel.app/"
+    window.location.href = "https://betterdrive.rhythmdoshi.site/"
   }
   return (
     <div className="relative w-screen h-screen overflow-hidden">

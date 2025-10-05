@@ -68,7 +68,7 @@ export function SignupFormDemo() {
   };
 
   return (
-    <div className="shadow-input mx-auto w-[95%] max-w-md rounded-none bg-white p-4 rounded-lg md:rounded-2xl md:p-8 dark:bg-black border-[1px] border-neutral-800">
+    <div className="shadow-input mx-auto w-[95%] max-w-md bg-white p-4 rounded-md md:rounded-2xl md:p-8 dark:bg-black border-[1px] border-neutral-800">
       <h2 className="text-3xl font-bold text-neutral-800 dark:text-neutral-200 text-center">
         Join the VIP List
       </h2>

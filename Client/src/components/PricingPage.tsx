@@ -26,7 +26,7 @@ export const PricingPage = () => {
 
       const handleConnectDrive = (): void => {
     // window.location.href = "http://localhost:3000/auth/google";
-    window.location.href = "https://better-drive-tau.vercel.app/vip-list"
+    window.location.href = "https://betterdrive.rhythmdoshi.site/vip-list"
   };
 
   const pricingPlans = [
