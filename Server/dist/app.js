@@ -44,6 +44,7 @@ app.use((0, helmet_1.default)({
         },
     },
     crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: "cross-origin" },
 }));
 // Apply global rate limiting THIRD
 app.use(rateLimiter_1.globalLimiter);
