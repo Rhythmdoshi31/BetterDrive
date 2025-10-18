@@ -51,15 +51,15 @@ const Dashboard: React.FC = () => {
         axios.get("/api/google/dashboard/files"), // Just for top3 & top7
         axios.get("/api/google/storage")
       ]);
-
+      
       setdashBoardData(dashboardResponse.data);
       setStorage(storageResponse.data.storage);
-
+      
       const userData = getCookieValue<User>("user_data");
       setUser(userData);
       if (!userData || !userData.isAuthenticated)
         window.location.href = "/login";
-
+      
       setLoading(false);
     } catch (error: unknown) {
       console.error("Error fetching initial data:", error);
@@ -69,7 +69,8 @@ const Dashboard: React.FC = () => {
       }
     }
   };
-
+  
+  console.log("DashbData", dashBoardData);
   useEffect(() => {
     fetchInitialData();
   }, []);
