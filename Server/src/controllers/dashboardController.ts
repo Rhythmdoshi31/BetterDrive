@@ -92,25 +92,25 @@ export default async (req: Request, res: Response): Promise<void> => {
 
         const top7Previews = previewableFiles.slice(0, 7);
 
-        dashboardData = { top3, top7Previews };
-
-        // Cache dashboard data for 1 hour
-        await redisClient.setEx(
-          `dashboard_data_${userPayload.userId}`,
-          3600,
-          JSON.stringify(dashboardData)
-        );
+        dashboardData = { top3, top7Previews };        
 
         // Cache thumbnails
-        for (const file of top7Previews) {
+        for (const file of dashboardData.top7Previews) {
           await cacheImageIfNeeded(file, userPayload.userId);
         }
 
-        for (const folder of top3.filter((f) => f.thumbnailLink)) {
+        for (const folder of dashboardData.top3.filter((f: DriveFile) => f.thumbnailLink)) {
           await cacheImageIfNeeded(folder, userPayload.userId);
         }
       }
 
+      // Cache dashboard data for 1 day
+      await redisClient.setEx(
+        `dashboard_data_${userPayload.userId}`,
+        86400,
+        JSON.stringify(dashboardData)
+      );
+  
       // Now fetch paginated files
       const paginatedResponse = await drive.files.list({
         q: "'root' in parents and trashed = false",
@@ -130,6 +130,7 @@ export default async (req: Request, res: Response): Promise<void> => {
         hasNextPage: !!nextPageToken,
         nextPageToken: nextPageToken || undefined,
       };
+      console.log("response : " + response.top7Previews[0].thumbnailLink);
 
       res.json(response);
     } else {
@@ -168,6 +169,7 @@ const cacheImageIfNeeded = async (file: DriveFile, userId: string): Promise<void
   const cacheKey = `thumb_${userId}_${file.id}`;
 
   const cached: number = await redisClient.exists(cacheKey);
+  console.log("Images were cached");
   if (!cached) {
     try {
       const response = await fetch(file.thumbnailLink);
@@ -187,4 +189,5 @@ const cacheImageIfNeeded = async (file: DriveFile, userId: string): Promise<void
 
   // Replace with our cached URL
   file.thumbnailLink = `${process.env.BACKEND_URL}/api/google/thumbnail/${userId}/${file.id}`;
+  console.log("New url is : " + file.thumbnailLink);
 };

@@ -12,17 +12,49 @@ const dotenv_1 = __importDefault(require("dotenv"));
 require("./lib/passport");
 const auth_1 = __importDefault(require("./routes/auth"));
 const google_1 = __importDefault(require("./routes/google"));
+const clearCache_1 = __importDefault(require("./routes/clearCache"));
 const redis_1 = require("./lib/redis");
 const waitlist_1 = __importDefault(require("./routes/waitlist"));
 const connect_redis_1 = __importDefault(require("connect-redis"));
+const rateLimiter_1 = require("./middleware/rateLimiter");
+const helmet_1 = __importDefault(require("helmet"));
+const auth_2 = require("./middleware/auth");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
+// Trust proxy - MUST be first (Railway/Vercel are behind proxies)
+app.set('trust proxy', 1);
+// Apply helmet SECOND
+app.use((0, helmet_1.default)({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            scriptSrc: [
+                "'self'",
+                "'unsafe-inline'",
+                "https://cdnjs.cloudflare.com",
+                "https://cdn.jsdelivr.net"
+            ],
+            imgSrc: ["'self'", "data:", "https:"],
+            connectSrc: ["'self'", "https://betterdrive.rhythmdoshi.site"],
+            fontSrc: ["'self'", "https:", "data:"],
+            objectSrc: ["'none'"],
+            mediaSrc: ["'self'"],
+            frameSrc: ["'none'"],
+        },
+    },
+    crossOriginEmbedderPolicy: false,
+}));
+// Apply global rate limiting THIRD
+app.use(rateLimiter_1.globalLimiter);
 // Middleware
 app.use((0, cors_1.default)({
     origin: [
         'http://localhost:3000',
+        'http://localhost:5173',
         'https://better-drive-tau.vercel.app',
-        'https://betterdrive.rhythmdoshi.site'
+        'https://betterdrive.rhythmdoshi.site',
+        'https://betterdrive-production.up.railway.app',
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -32,18 +64,22 @@ app.use((0, cors_1.default)({
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.urlencoded({ extended: true }));
-// Routes without sessions
+// Health routes (no rate limiting needed)
 app.get('/health', (req, res) => {
     res.json({
         status: 'ok',
         timestamp: new Date().toISOString(),
-        redis: redis_1.redisClient.isOpen ? 'connected' : 'disconnected'
+        redis: redis_1.redisClient.isOpen ? 'connected' : 'disconnected',
+        uptime: process.uptime()
     });
 });
 app.get('/test', (req, res) => {
     res.json({ message: 'Server is working!' });
 });
-app.use('/api/waitlist', waitlist_1.default);
+app.delete('/api/cache/dashboard', auth_2.verifyToken, clearCache_1.default);
+;
+// Apply specific rate limiter to waitlist
+app.use('/api/waitlist', rateLimiter_1.waitlistLimiter, waitlist_1.default);
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : (() => {
     throw new Error('PORT environment variable is not set');
 })();
@@ -60,15 +96,18 @@ const setupSessionAndAuth = async () => {
         secret: process.env.SESSION_SECRET || 'fallback-secret',
         resave: false,
         saveUninitialized: false,
+        proxy: true, // Trust the proxy
         cookie: {
             secure: process.env.NODE_ENV === 'production',
             maxAge: 24 * 60 * 60 * 1000,
-            httpOnly: true
+            httpOnly: true,
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
         }
     }));
     app.use(passport_1.default.initialize());
     app.use(passport_1.default.session());
-    app.use('/auth', auth_1.default);
+    // Apply auth rate limiter to auth routes
+    app.use('/auth', rateLimiter_1.authLimiter, auth_1.default);
     app.use('/api/google', google_1.default);
     console.log('✅ Session, passport, and auth routes configured');
 };
@@ -81,6 +120,9 @@ const startServer = async () => {
             console.log(`✅ Health check: http://${HOST}:${PORT}/health`);
             console.log(`✅ Test endpoint: http://${HOST}:${PORT}/test`);
             console.log(`✅ Waitlist API: http://${HOST}:${PORT}/api/waitlist/count`);
+            console.log(`🛡️ Rate limiting enabled`);
+            console.log(`🛡️ Helmet security headers enabled`);
+            console.log(`🔒 Trust proxy enabled`);
         });
     }
     catch (error) {
@@ -94,6 +136,17 @@ const startServer = async () => {
         });
     }
 };
+// Global error handler for routes (must be after all routes)
+app.use((err, req, res, next) => {
+    console.error('🚨 Route Error:', err);
+    const message = process.env.NODE_ENV === 'production'
+        ? 'Internal Server Error'
+        : err.message;
+    res.status(500).json({
+        success: false,
+        error: message
+    });
+});
 // Error handlers
 process.on('unhandledRejection', (reason, promise) => {
     console.error('🚨 Unhandled Rejection at:', promise);
@@ -116,11 +169,6 @@ process.on('SIGINT', () => {
         redis_1.redisClient.quit();
     }
     process.exit(0);
-});
-// Global error handler for routes
-app.use((err, req, res, next) => {
-    console.error('🚨 Route Error:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
 });
 startServer();
 //# sourceMappingURL=app.js.map
