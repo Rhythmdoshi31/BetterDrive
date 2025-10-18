@@ -3,6 +3,7 @@ import ImageCompare from "./ImageCompare";
 import { FlipWords } from "./ui/flip-words";
 import { NavbarButton } from "./ui/resizable-navbar";
 import '../styles/gradients.css'
+import handleConnectDrive from "../utils/handleConnectDrive";
 
 export const ComparisonPage: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -24,10 +25,6 @@ useEffect(() => {
   
   return () => observer.disconnect();
 }, []); 
-  const handleConnectDrive = (): void => {
-    // window.location.href = "http://localhost:3000/auth/google";
-    window.location.href = "https://betterdrive.rhythmdoshi.site/vip-list";
-  };
   return (
     //  pt-[13vh] flex-col
     <div

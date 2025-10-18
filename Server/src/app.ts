@@ -7,11 +7,13 @@ import dotenv from 'dotenv';
 import './lib/passport';
 import authRoutes from './routes/auth';
 import googleRoutes from './routes/google';
+import clearCacheController from './routes/clearCache';
 import { initRedis, redisClient } from './lib/redis';
 import waitlistRoutes from './routes/waitlist';
 import RedisStore from 'connect-redis';
 import { globalLimiter, authLimiter, waitlistLimiter } from './middleware/rateLimiter';
 import helmet from 'helmet';
+import { verifyToken } from './middleware/auth';
 
 dotenv.config();
 
@@ -52,7 +54,8 @@ app.use(cors({
     'http://localhost:3000',
     'http://localhost:5173',
     'https://better-drive-tau.vercel.app',
-    'https://betterdrive.rhythmdoshi.site'
+    'https://betterdrive.rhythmdoshi.site',
+    'https://betterdrive-production.up.railway.app',
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -77,7 +80,7 @@ app.get('/health', (req, res) => {
 app.get('/test', (req, res) => {
   res.json({ message: 'Server is working!' });
 });
-
+app.delete('/api/cache/dashboard', verifyToken, clearCacheController);;
 // Apply specific rate limiter to waitlist
 app.use('/api/waitlist', waitlistLimiter, waitlistRoutes);
 

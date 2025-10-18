@@ -11,6 +11,7 @@ import {
   NavbarLogo,
   NavbarButton,
 } from "./ui/resizable-navbar"; // adjust path where you saved it
+import handleConnectDrive from "../utils/handleConnectDrive";
 
 const NavBar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,11 +28,6 @@ const NavBar: React.FC = () => {
         });
       }
     }
-  };
-
-  const handleConnectDrive = (): void => {
-    // window.location.href = "http://localhost:3000/auth/google";
-    window.location.href = "https://betterdrive.rhythmdoshi.site/vip-list"
   };
 
   const items = [
