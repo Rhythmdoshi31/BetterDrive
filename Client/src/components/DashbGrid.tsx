@@ -54,7 +54,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
       {/* Left Grid - 30% */}
       <div className="bg-gray-100 dark:bg-neutral-900/20 md:p-3 lg:p-4 rounded-lg">
         <div className="flex items-center justify-between">
-          <h1 className="font-antique-olive text-white md:text-xl lg:text-2xl tracking-wide pt-1">
+          <h1 className="font-antique-olive text-neutral-900 dark:text-white md:text-xl lg:text-2xl tracking-wide pt-1">
             My Drive
           </h1>
           <div className="flex items-center justify-center gap-2 md:gap-3 lg:gap-4 text-white">
@@ -69,7 +69,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
           </div>
         </div>
         <div>
-          <h1 className="font-sans font-thin tracking-wider text-white md:text-md lg:text-lg my-1 mb-2">
+          <h1 className="font-sans font-thin tracking-wider text-black dark:text-white md:text-md lg:text-lg my-1 mb-2">
             Quick Access
           </h1>
           {dashBoardData?.top3?.map((e) => {
@@ -77,14 +77,14 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
             return (
               <div
                 key={e.id}
-                className="border-[1px] border-neutral-800 bg-[#18181B] hover:bg-neutral-800 hover:scale-[1.008] transition duration-100 cursor-pointer w-full my-3 py-2 pl-2 rounded-md flex items-center justify-start gap-2"
+                className="border-[1px] border-neutral-300 dark:border-neutral-800 bg-neutral-200 dark:bg-[#18181B] hover:bg-neutral-400 dark:hover:bg-neutral-800 hover:scale-[1.008] transition duration-100 cursor-pointer w-full my-3 py-2 pl-2 rounded-md flex items-center justify-start gap-2"
               >
                 <IconComponent
                   size={24}
                   weight="fill"
                   style={{ color: iconColor }}
                 />
-                <h1 className="text-gray-200 pt-1">{e.name}</h1>
+                <h1 className="text-black dark:text-gray-200 pt-1">{e.name}</h1>
               </div>
             );
           })}
@@ -92,8 +92,8 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
       </div>
 
       {/* Right Grid - 70% */}
-      <div className="bg-gray-100 dark:bg-neutral-900/20 md:p-4 pt-3 md:pb-6 rounded-lg shadow-sm">
-        <h1 className="font-antique-olive text-white md:text-right md:text-xl lg:text-2xl tracking-wide pr-2 mb-3">
+      <div className="dark:bg-neutral-900/20 md:p-4 pt-3 md:pb-6 rounded-lg shadow-sm">
+        <h1 className="font-antique-olive text-neutral-900 dark:text-white md:text-right md:text-xl lg:text-2xl tracking-wide pr-2 mb-3">
           Recent Files
         </h1>
 
@@ -119,7 +119,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
                     e.stopPropagation();
                     openFilePreview(file);
                   }}
-                className="border-[1px] border-neutral-800 bg-[#18181B] w-40 h-[90%] rounded-lg shadow-sm flex flex-col overflow-hidden hover:shadow-md transition-shadow cursor-pointer flex-shrink-0 relative hover:bg-neutral-800 transition duration-100"
+                className="border-[1px] border-neutral-300 dark:border-neutral-800 bg-neutral-300 dark:bg-[#18181B] w-40 h-[90%] rounded-lg shadow-sm flex flex-col overflow-hidden hover:shadow-md transition-shadow cursor-pointer flex-shrink-0 relative hover:bg-neutral-400 dark:hover:bg-neutral-800 transition duration-100"
                 onMouseDown={(e) => e.stopPropagation()}
               >
                 {/* Image Container */}
@@ -152,7 +152,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
                     weight="fill"
                     style={{ color: iconColor }}
                   />
-                  <p className="text-[0.93rem] text-gray-200 truncate leading-tight flex-1 hover:text-blue-600">
+                  <p className="text-[0.93rem] text-neutral-900 dark:text-gray-200 truncate leading-tight flex-1 hover:text-blue-600">
                     {file.name.slice(0, 12) + "..."}
                   </p>
                 </div>
