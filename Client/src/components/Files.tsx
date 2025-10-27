@@ -529,7 +529,7 @@ const FileListView: React.FC<FileListViewProps> = ({
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-2 md:mb-4">
-        <h1 className="font-antique-olive mt-2 text-white md:text-xl lg:text-2xl tracking-wide">
+        <h1 className="font-antique-olive mt-2 text-black dark:text-white md:text-xl lg:text-2xl tracking-wide">
           {getDisplayTitle()} {showFileCount && `(${allFiles.length})`}
         </h1>
         <div className="flex items-center justify-center gap-4">
@@ -571,7 +571,7 @@ const FileListView: React.FC<FileListViewProps> = ({
           return (
             <div
               key={file.id}
-              className={`grid grid-cols-[70%_30%] md:grid-cols-[45%_20%_15%_15%] lg:grid-cols-[35%_20%_15%_15%_15%] gap-4 h-12 text-white w-full rounded-lg px-4 mb-3 items-center border-[1px] border-neutral-800 bg-[#18181B] hover:bg-neutral-800 hover:scale-[1.008] transition duration-100 cursor-pointer`}
+              className={`grid grid-cols-[70%_30%] md:grid-cols-[45%_20%_15%_15%] lg:grid-cols-[35%_20%_15%_15%_15%] gap-4 h-12 text-black dark:text-white w-full rounded-lg px-4 mb-3 items-center border-[1px] border-neutral-300 dark:border-neutral-800 bg-neutral-300 dark:bg-[#18181B] hover:bg-neutral-400 dark:hover:bg-neutral-800 hover:scale-[1.008] transition duration-100 cursor-pointer`}
               onClick={() => {
                 if (isFolder) {
                   handleFolderClick(file);
