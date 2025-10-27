@@ -67,7 +67,8 @@ export default async (req: Request, res: Response): Promise<void> => {
           q: "'root' in parents and trashed = false",
           orderBy: "modifiedTime desc",
           pageSize: 50, // Get more for dashboard processing
-          fields: "files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size)",
+          fields:
+            "files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size)",
         });
 
         const allDashboardFiles = dashboardResponse.data.files as DriveFile[];
@@ -78,11 +79,13 @@ export default async (req: Request, res: Response): Promise<void> => {
         );
         const previewableFiles = allDashboardFiles.filter(
           (f) =>
-            f.thumbnailLink && f.mimeType !== "application/vnd.google-apps.folder"
+            f.thumbnailLink &&
+            f.mimeType !== "application/vnd.google-apps.folder"
         );
         const nonPreviewFiles = allDashboardFiles.filter(
           (f) =>
-            !f.thumbnailLink && f.mimeType !== "application/vnd.google-apps.folder"
+            !f.thumbnailLink &&
+            f.mimeType !== "application/vnd.google-apps.folder"
         );
 
         const top3 = [...folders.slice(0, 3)];
@@ -92,31 +95,34 @@ export default async (req: Request, res: Response): Promise<void> => {
 
         const top7Previews = previewableFiles.slice(0, 7);
 
-        dashboardData = { top3, top7Previews };        
+        dashboardData = { top3, top7Previews };
 
         // Cache thumbnails
         for (const file of dashboardData.top7Previews) {
           await cacheImageIfNeeded(file, userPayload.userId);
         }
 
-        for (const folder of dashboardData.top3.filter((f: DriveFile) => f.thumbnailLink)) {
+        for (const folder of dashboardData.top3.filter(
+          (f: DriveFile) => f.thumbnailLink
+        )) {
           await cacheImageIfNeeded(folder, userPayload.userId);
         }
+        // Cache dashboard data for 1 day
+        await redisClient.setEx(
+          `dashboard_data_${userPayload.userId}`,
+          86400,
+          JSON.stringify(dashboardData)
+        );
+        console.log("dashb data was cached again");
       }
 
-      // Cache dashboard data for 1 day
-      await redisClient.setEx(
-        `dashboard_data_${userPayload.userId}`,
-        86400,
-        JSON.stringify(dashboardData)
-      );
-  
       // Now fetch paginated files
       const paginatedResponse = await drive.files.list({
         q: "'root' in parents and trashed = false",
         orderBy: "modifiedTime desc",
         pageSize: limit,
-        fields: "nextPageToken, files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size, starred)",
+        fields:
+          "nextPageToken, files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size, starred)",
       });
 
       const allFiles = paginatedResponse.data.files as DriveFile[];
@@ -140,7 +146,8 @@ export default async (req: Request, res: Response): Promise<void> => {
         orderBy: "modifiedTime desc",
         pageSize: limit,
         pageToken: pageToken,
-        fields: "nextPageToken, files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size, starred)",
+        fields:
+          "nextPageToken, files(id, name, mimeType, thumbnailLink, modifiedTime, webViewLink, size, starred)",
       });
 
       const allFiles = paginatedResponse.data.files as DriveFile[];
@@ -163,22 +170,28 @@ export default async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const cacheImageIfNeeded = async (file: DriveFile, userId: string): Promise<void> => {
+const cacheImageIfNeeded = async (
+  file: DriveFile,
+  userId: string
+): Promise<void> => {
   if (!file.thumbnailLink) return;
 
   const cacheKey = `thumb_${userId}_${file.id}`;
 
   const cached: number = await redisClient.exists(cacheKey);
-  console.log("Images were cached");
+  if (cached) console.log("found existing keys");
   if (!cached) {
     try {
       const response = await fetch(file.thumbnailLink);
       const imageBuffer: Buffer = Buffer.from(await response.arrayBuffer());
 
-      console.log('📸 Original image buffer first bytes:', imageBuffer.slice(0, 10));
+      console.log(
+        "📸 Original image buffer first bytes:",
+        imageBuffer.slice(0, 10)
+      );
 
       // ✅ Store as Base64 to prevent corruption
-      const base64Data = imageBuffer.toString('base64');
+      const base64Data = imageBuffer.toString("base64");
       await redisClient.set(cacheKey, base64Data, { EX: 86400 });
 
       console.log(`✅ Cached thumbnail for: ${file.name}`);

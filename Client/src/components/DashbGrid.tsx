@@ -48,15 +48,16 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
       setPreviewFile(null);
     };
 
-  return (
-    <div className="grid grid-cols-[30%_70%] gap-4 max-h-[35vh] pt-4">
+  return ( // Giving paddingg for mobiles
+    <div className="px-6 sm:p-0 grid grid-cols-1 sm:grid-cols-[30%_70%] sm:gap-4 sm:max-h-[35vh] p-2 md:pt-4">
+
       {/* Left Grid - 30% */}
       <div className="bg-gray-100 dark:bg-neutral-900/20 md:p-3 lg:p-4 rounded-lg">
         <div className="flex items-center justify-between">
           <h1 className="font-antique-olive text-white md:text-xl lg:text-2xl tracking-wide pt-1">
             My Drive
           </h1>
-          <div className="flex items-center justify-center md:gap-3 lg:gap-4 text-white">
+          <div className="flex items-center justify-center gap-2 md:gap-3 lg:gap-4 text-white">
             <CaretDownIcon
               size={34}
               className="bg-blue-600 p-2 rounded-[50%] hover:bg-blue-500 hover:md:scale-100 hover:lg:scale-105 md:scale-90 lg:scale-100 hover:font-semibold transition duration-100"
