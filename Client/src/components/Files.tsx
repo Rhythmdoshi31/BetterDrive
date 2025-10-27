@@ -525,7 +525,7 @@ const FileListView: React.FC<FileListViewProps> = ({
   // ============ MAIN RENDER ============
   return (
     <div
-      className={`${location.pathname !== "/dashboard" ? "mt-2" : "mt-2 md:mt-16"} p-4`}
+      className={`${location.pathname !== "/dashboard" ? "px-4 md:p-4 mt-2" : "mt-2 md:mt-16 p-4"} `}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-2 md:mb-4">
