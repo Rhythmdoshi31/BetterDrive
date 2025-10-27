@@ -49,7 +49,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
     };
 
   return ( // Giving paddingg for mobiles
-    <div className="px-6 sm:p-0 grid grid-cols-1 sm:grid-cols-[30%_70%] sm:gap-4 sm:max-h-[35vh] p-2 md:pt-4">
+    <div className="px-4 sm:p-0 grid grid-cols-1 sm:grid-cols-[30%_70%] sm:gap-4 sm:max-h-[35vh] p-2 md:pt-4">
 
       {/* Left Grid - 30% */}
       <div className="bg-gray-100 dark:bg-neutral-900/20 md:p-3 lg:p-4 rounded-lg">
@@ -92,8 +92,8 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
       </div>
 
       {/* Right Grid - 70% */}
-      <div className="bg-gray-100 dark:bg-neutral-900/20 p-4 pt-3 pb-6 rounded-lg shadow-sm">
-        <h1 className="font-antique-olive text-white text-right md:text-xl lg:text-2xl tracking-wide pr-2 mb-3">
+      <div className="bg-gray-100 dark:bg-neutral-900/20 md:p-4 pt-3 md:pb-6 rounded-lg shadow-sm">
+        <h1 className="font-antique-olive text-white md:text-right md:text-xl lg:text-2xl tracking-wide pr-2 mb-3">
           Recent Files
         </h1>
 
