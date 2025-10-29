@@ -4,7 +4,7 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { cn } from "../lib/utils";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export function SignupFormDemo() {
   const [counter, setCounter] = useState(7);
@@ -21,7 +21,7 @@ export function SignupFormDemo() {
 
   const fetchWaitlistCount = async () => { 
     try {
-      const response = await fetch('http://localhost:3000/api/waitlist/count');
+      const response = await fetch(`${BACKEND_URL}/api/waitlist/count`);
       const data = await response.json();
       if (data.success) {
         setCounter(data.count);
@@ -37,7 +37,7 @@ export function SignupFormDemo() {
     setMessage("");
 
     try {
-      const response = await fetch(`${API_URL}/api/waitlist`, {
+      const response = await fetch(`${BACKEND_URL}/api/waitlist`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
