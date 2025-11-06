@@ -7,6 +7,7 @@ import RecentFiles from "./pages/Recent";
 import TrashFiles from "./pages/Trash";
 import FoldersPage from "./pages/Folders";
 import PreregisterPage from "./components/Pre-registerPage"
+import SettingsPage from "./pages/Settings";
 // import ProtectedRoute from "./components/ProtectedRoute";
 
 const App: React.FC = () => {
@@ -32,6 +33,7 @@ const App: React.FC = () => {
           <Route path="/recent" element={<RecentFiles />} />
           <Route path="/trash" element={<TrashFiles />} />
           <Route path="/folders" element={<FoldersPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route path="/vip-list" element={<PreregisterPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
