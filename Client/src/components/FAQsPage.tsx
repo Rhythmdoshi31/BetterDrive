@@ -33,7 +33,7 @@ const [isDarkMode, setIsDarkMode] = useState(false);
     <div
       className={`h-fit w-full flex flex-col items-center justify-start pt-[11vh] sm:pt-[17vh] pb-[20vh] ${isDarkMode ? 'FAQsPage-dark' : 'bg-[#FFFEFE]'}`}
     >
-        <h1 className={`text-center text-[2.5rem] pr-1 font-antique-olive dark:text-gray-100 text-neutral-800`}>Frequently Asked Questions</h1>
+        <h1 className={`text-center text-[2.5rem] xl:text-[2.4rem] pr-1 font-antique-olive dark:text-gray-100 text-neutral-800`}>Frequently Asked Questions</h1>
       <hr className="mt-[2vh] mb-[10vh] h-[2px] dark:h-[1px] w-[7vw] bg-neutral-900/50 dark:bg-gray-600" />
 
       <Accordion className="w-[70vw] md:w-[60vw] lg:w-[50vw] scale-[1.3] bg-white dark:bg-transparent p-4 rounded-xl" type="single" collapsible>
