@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import type { DriveFile, DashboardResponse } from "../types";
 import { getFileTypeStyle } from "../utils/fileTypeHelper";
-import { CaretDownIcon, DotsSixIcon, PlusIcon } from "@phosphor-icons/react";
+import { CaretDownIcon, PlusIcon } from "@phosphor-icons/react";
 import FilePreviewModal from "../utils/FilePreviewModal";
 import CreateFolderModal from "../utils/CreateFolderModal"; // ✅ Import the modal
 import {
@@ -11,9 +11,6 @@ import {
   shift,
   useFloating,
 } from "@floating-ui/react";
-import { motion, AnimatePresence } from "motion/react";
-import { createPortal } from "react-dom";
-import { FolderPlusIcon, InfoIcon, UploadIcon } from "lucide-react";
 import SixDotsDropdown from "../utils/SixDotsDropdown";
 import FileUploadModal from "./FileUpload";
 

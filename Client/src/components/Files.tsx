@@ -17,8 +17,6 @@ import {
   HardDriveIcon,
   TrashIcon,
   ArrowCounterClockwiseIcon,
-  FolderPlusIcon,
-  UploadIcon,
   FolderIcon,
   CaretRightIcon,
   HouseIcon,
