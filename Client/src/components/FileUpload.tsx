@@ -183,8 +183,10 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
     if (validFiles.length === 0) return;
 
     setIsUploading(true);
+    let uploadedFiles: File[] = [];
 
     try {
+      console.log("validFiles" + validFiles.length)
       for (const uploadFile of validFiles) {
         setFiles(prev => prev.map(f => 
           f.id === uploadFile.id ? { ...f, status: 'uploading', progress: 0 } : f
@@ -208,18 +210,18 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({
           }
         });
 
-        setFiles(prev => prev.map(f => 
+        await setFiles(prev => prev.map(f => 
           f.id === uploadFile.id ? { ...f, status: 'success', progress: 100 } : f
         ));
+
+        uploadedFiles.push(uploadFile.file);
       }
 
-      // Success callback
-      const successfulFiles = files
-        .filter(f => f.status === 'success')
-        .map(f => f.file);
-      
-      if (successfulFiles.length > 0 && onUploadComplete) {
-        onUploadComplete(successfulFiles);
+      console.log("uploaded files " + uploadedFiles.length)
+
+      if (uploadedFiles.length > 0 && onUploadComplete) {
+        console.log("Files uploaded have been")
+        onUploadComplete(uploadedFiles);
       }
 
       // Auto close after 2 seconds

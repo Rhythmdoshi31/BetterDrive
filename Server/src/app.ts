@@ -63,6 +63,22 @@ app.use(helmet({
 
 // Apply global rate limiting THIRD
 app.use(globalLimiter);
+
+// Middleware
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://better-drive-tau.vercel.app',
+    'https://betterdrive.rhythmdoshi.site',
+    'https://betterdrive-production.up.railway.app',
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));

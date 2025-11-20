@@ -2,13 +2,27 @@ import React, { useRef, useState } from "react";
 import type { DriveFile, DashboardResponse } from "../types";
 import { getFileTypeStyle } from "../utils/fileTypeHelper";
 import { CaretDownIcon, PlusIcon } from "@phosphor-icons/react";
-import FilePreviewModal from "./FilePreviewModal";
+import FilePreviewModal from "../utils/FilePreviewModal";
+import CreateFolderModal from "../utils/CreateFolderModal"; // ✅ Import the modal
+import {
+  autoUpdate,
+  flip,
+  offset,
+  shift,
+  useFloating,
+} from "@floating-ui/react";
+import SixDotsDropdown from "../utils/SixDotsDropdown";
+import FileUploadModal from "./FileUpload";
 
 interface DashboardGridProps {
   dashBoardData: DashboardResponse | null;
+  onRefresh: () => void;
 }
 
-const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
+const DashboardGrid: React.FC<DashboardGridProps> = ({
+  dashBoardData,
+  onRefresh,
+}) => {
   // Drag scroll functionality
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -17,6 +31,10 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
 
   const [previewFile, setPreviewFile] = useState<DriveFile | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isCreateFolderOpen, setIsCreateFolderOpen] = useState<boolean>(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
@@ -39,18 +57,60 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
   };
 
   const openFilePreview = (file: DriveFile) => {
-      setPreviewFile(file);
-      setIsPreviewOpen(true);
-    };
-  
-    const closeFilePreview = () => {
-      setIsPreviewOpen(false);
-      setPreviewFile(null);
-    };
+    setPreviewFile(file);
+    setIsPreviewOpen(true);
+  };
 
-  return ( // Giving paddingg for mobiles
-    <div className="px-4 sm:p-0 grid grid-cols-1 sm:grid-cols-[30%_70%] sm:gap-4 sm:max-h-[35vh] p-2 md:pt-4">
+  const closeFilePreview = () => {
+    setIsPreviewOpen(false);
+    setPreviewFile(null);
+  };
 
+  const handleUploadComplete = (files: File[]) => {
+    console.log("Files uploaded successfully:", files);
+    setIsUploadModalOpen(false);
+    onRefresh?.();
+  };
+
+  const handleFolderCreated = (folderName: string) => {
+    console.log("New folder created:", folderName);
+    onRefresh?.();
+  };
+
+  const {
+    x: dropdownX,
+    y: dropdownY,
+    strategy: dropdownStrategy,
+    refs: dropdownRefs,
+  } = useFloating({
+    placement: "bottom-start",
+    middleware: [offset(8), flip(), shift()],
+    whileElementsMounted: autoUpdate,
+  });
+
+  const handleDropdownClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (isDropdownOpen) {
+      setIsDropdownOpen(false);
+      return;
+    }
+
+    dropdownRefs.setReference(e.currentTarget as HTMLElement);
+    setIsDropdownOpen(true);
+  };
+
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
+  };
+
+  const handleUploadFiles = () => {
+    closeDropdown();
+    setIsUploadModalOpen(true);
+  };
+
+  return (
+    <div className="px-6 sm:p-0 grid grid-cols-1 sm:grid-cols-[30%_70%] sm:gap-4 sm:max-h-[35vh] p-2 md:pt-4">
       {/* Left Grid - 30% */}
       <div className="bg-gray-100 dark:bg-neutral-900/20 md:p-3 lg:p-4 rounded-lg">
         <div className="flex items-center justify-between">
@@ -59,12 +119,15 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
           </h1>
           <div className="flex items-center justify-center gap-2 md:gap-3 lg:gap-4 text-white">
             <CaretDownIcon
+              onClick={handleDropdownClick}
               size={34}
-              className="bg-blue-600 p-2 rounded-[50%] hover:bg-blue-500 hover:md:scale-100 hover:lg:scale-105 md:scale-90 lg:scale-100 hover:font-semibold transition duration-100"
+              className="bg-blue-600 p-2 rounded-[50%] hover:bg-blue-500 hover:md:scale-100 hover:lg:scale-105 md:scale-90 lg:scale-100 hover:font-semibold transition duration-100 cursor-pointer"
             />
+
             <PlusIcon
               size={34}
-              className="bg-green-600 p-2 rounded-[50%] hover:bg-green-500 hover:md:scale-100 hover:lg:scale-105 md:scale-90 lg:scale-100 hover:font-semibold transition duration-100"
+              onClick={() => setIsCreateFolderOpen(true)}
+              className="bg-green-600 p-2 rounded-[50%] hover:bg-green-500 hover:md:scale-100 hover:lg:scale-105 md:scale-90 lg:scale-100 hover:font-semibold transition duration-100 cursor-pointer"
             />
           </div>
         </div>
@@ -116,10 +179,10 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
               <div
                 key={file.id}
                 onClick={(e) => {
-                    e.stopPropagation();
-                    openFilePreview(file);
-                  }}
-                className="border-[1px] border-neutral-300 dark:border-neutral-800 bg-neutral-300 dark:bg-[#18181B] w-40 h-[90%] rounded-lg shadow-sm flex flex-col overflow-hidden hover:shadow-md transition-shadow cursor-pointer flex-shrink-0 relative hover:bg-neutral-400 dark:hover:bg-neutral-800 transition duration-100"
+                  e.stopPropagation();
+                  openFilePreview(file);
+                }}
+                className="border-[1px] border-neutral-800 bg-[#18181B] w-40 h-[90%] rounded-lg shadow-sm flex flex-col overflow-hidden hover:shadow-md transition-shadow cursor-pointer flex-shrink-0 relative hover:bg-neutral-800 transition duration-100"
                 onMouseDown={(e) => e.stopPropagation()}
               >
                 {/* Image Container */}
@@ -160,12 +223,44 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ dashBoardData }) => {
             );
           })}
         </div>
-      </div>
-      {/* File Preview Modal */}
+        {/* File Preview Modal */}
       <FilePreviewModal
         isOpen={isPreviewOpen}
         file={previewFile}
         onClose={closeFilePreview}
+      />
+      </div>
+
+      {/* Upload Modal */}
+      <FileUploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onUploadComplete={handleUploadComplete}
+      />
+
+      {/* Create Folder Modal */}
+      <CreateFolderModal
+        isOpen={isCreateFolderOpen}
+        onClose={() => setIsCreateFolderOpen(false)}
+        onFolderCreated={handleFolderCreated}
+      />
+
+      <SixDotsDropdown
+        isOpen={isDropdownOpen}
+        floatingRef={dropdownRefs.setFloating}
+        strategy={dropdownStrategy}
+        x={dropdownX}
+        y={dropdownY}
+        onClickOutside={closeDropdown}
+        onUploadFiles={() => {
+          closeDropdown();
+          handleUploadFiles();
+        }}
+        onCreateFolder={() => {
+          closeDropdown();
+          setIsCreateFolderOpen(true);
+        }}
+        closeDropdown={closeDropdown}
       />
     </div>
   );
