@@ -22,6 +22,21 @@ const app: Application = express();
 // Trust proxy - MUST be first (Railway/Vercel are behind proxies)
 app.set('trust proxy', 1);
 
+// Middleware
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://better-drive-tau.vercel.app',
+    'https://betterdrive.rhythmdoshi.site',
+    'https://betterdrive-production.up.railway.app',
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
+}));
+
 // Apply helmet SECOND
 app.use(helmet({
   contentSecurityPolicy: {

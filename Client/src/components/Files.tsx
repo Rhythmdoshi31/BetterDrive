@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { createPortal } from "react-dom";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import type { AxiosResponse } from "axios";
 import type { DriveFile } from "../types";
@@ -21,14 +20,6 @@ import {
   CaretRightIcon,
   HouseIcon,
 } from "@phosphor-icons/react";
-import { motion, AnimatePresence } from "motion/react";
-import {
-  useFloating,
-  offset,
-  flip,
-  shift,
-  autoUpdate,
-} from "@floating-ui/react";
 import FileUpload from "./FileUpload";
 import CreateFolderModal from "../utils/CreateFolderModal";
 import SixDotsDropdown from "../utils/SixDotsDropdown";
@@ -40,12 +31,14 @@ interface FolderMetadata {
   parents?: string[];
 }
 
+
 interface StorageQuota {
   used: number;
   usedInDrive: number;
   usedInTrash: number;
   limit: number;
 }
+
 
 interface FileListViewProps {
   title: string;
@@ -62,6 +55,7 @@ interface FileListViewProps {
   enableFolderNavigation?: boolean;
 }
 
+
 interface ApiResponse {
   allFiles: DriveFile[];
   totalCount: number;
@@ -70,6 +64,7 @@ interface ApiResponse {
   currentFolder?: FolderMetadata | null;
   breadcrumbPath?: FolderMetadata[];
 }
+
 
 const FileListView: React.FC<FileListViewProps> = ({
   title,
@@ -85,23 +80,13 @@ const FileListView: React.FC<FileListViewProps> = ({
   },
   enableFolderNavigation = false,
 }) => {
-  // ============ TYPE GUARD FUNCTION ============
-  const isHTMLElement = (element: any): element is HTMLElement => {
-    return (
-      element &&
-      typeof element === "object" &&
-      "contains" in element &&
-      typeof element.contains === "function"
-    );
-  };
-
   // ============ ROUTING HOOKS ============
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isTrashView = location.pathname === "/trash";
 
-  // Get folderId from URL params (for /folders?folderId=xyz)
+  // Get folderId from URL params
   const folderIdFromURL = searchParams.get("folderId");
 
   // ============ STATE VARIABLES ============
@@ -117,43 +102,14 @@ const FileListView: React.FC<FileListViewProps> = ({
   const [starringFile, setStarringFile] = useState<string | null>(null);
   const [deletingFile, setDeletingFile] = useState<string | null>(null);
 
-  // Floating UI popup state
-  const [openFilePopup, setOpenFilePopup] = useState<string | null>(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   // Modal states
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
 
   // Folder navigation state
   const [currentFolderId, setCurrentFolderId] = useState<string | null>(null);
-  const [currentFolder, setCurrentFolder] = useState<FolderMetadata | null>(
-    null
-  );
+  const [currentFolder, setCurrentFolder] = useState<FolderMetadata | null>(null);
   const [breadcrumbPath, setBreadcrumbPath] = useState<FolderMetadata[]>([]);
-
-  // ============ FLOATING UI HOOKS ============
-  const {
-    x: filePopupX,
-    y: filePopupY,
-    strategy: filePopupStrategy,
-    refs: filePopupRefs,
-  } = useFloating({
-    placement: "bottom-end",
-    middleware: [offset(8), flip(), shift()],
-    whileElementsMounted: autoUpdate,
-  });
-
-  const {
-    x: dropdownX,
-    y: dropdownY,
-    strategy: dropdownStrategy,
-    refs: dropdownRefs,
-  } = useFloating({
-    placement: "bottom-start",
-    middleware: [offset(8), flip(), shift()],
-    whileElementsMounted: autoUpdate,
-  });
 
   // ============ HELPER FUNCTIONS ============
   const openFilePreview = (file: DriveFile) => {
@@ -192,25 +148,20 @@ const FileListView: React.FC<FileListViewProps> = ({
     return title;
   };
 
-  // ============ FOLDER NAVIGATION - ALWAYS NAVIGATE TO /folders ============
+  // ============ FOLDER NAVIGATION ============
   const handleFolderClick = (folder: DriveFile) => {
     if (folder.mimeType === "application/vnd.google-apps.folder") {
-      // ALWAYS navigate to /folders route for folder navigation
-      console.log("handelFolderClick on line 208 chala");
       navigate(`/folders?folderId=${folder.id}`);
     }
   };
 
-  // ============ UPDATED BREADCRUMB COMPONENT ============
+  // ============ BREADCRUMB COMPONENT ============
   const Breadcrumb: React.FC = () => {
-    // Only show breadcrumb if we have navigation
     if (!currentFolder && breadcrumbPath.length === 0) {
       return null;
     }
 
-    // FILTER OUT "MyDrive" or root folder from breadcrumb path
     const filteredBreadcrumb = breadcrumbPath.filter((folder, idx) => {
-      // Skip the first folder if it's "MyDrive", "All Files", or other root folder names
       if (
         idx === 0 &&
         (folder.name.toLowerCase().includes("mydrive") ||
@@ -218,22 +169,21 @@ const FileListView: React.FC<FileListViewProps> = ({
           folder.name.toLowerCase().includes("drive") ||
           folder.name === "My Drive")
       ) {
-        return false; // Don't include this folder in breadcrumb
+        return false;
       }
-      return true; // Include all other folders
+      return true;
     });
 
     return (
       <nav className="flex items-center space-x-2 mb-4 text-sm">
         <button
-          onClick={() => navigate("/dashboard")} // Home goes to Dashboard
+          onClick={() => navigate("/dashboard")}
           className="flex items-center gap-1 px-2 py-1 rounded hover:bg-neutral-700 transition-colors text-gray-300 hover:text-white"
         >
           <HouseIcon size={16} />
           <span>Home</span>
         </button>
 
-        {/* Render FILTERED breadcrumb path */}
         {filteredBreadcrumb.map((folder) => (
           <React.Fragment key={folder.id}>
             <CaretRightIcon size={14} className="text-gray-500" />
@@ -257,97 +207,6 @@ const FileListView: React.FC<FileListViewProps> = ({
       </nav>
     );
   };
-
-  // ============ POPUP HANDLERS WITH FLOATING UI ============
-  const handleFileDotsClick = (e: React.MouseEvent, fileId: string) => {
-    e.stopPropagation();
-
-    if (openFilePopup === fileId) {
-      setOpenFilePopup(null);
-      return;
-    }
-
-    filePopupRefs.setReference(e.currentTarget as HTMLElement);
-    setOpenFilePopup(fileId);
-  };
-
-  const closeFilePopup = () => {
-    setOpenFilePopup(null);
-  };
-
-  const handleDropdownClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-
-    if (isDropdownOpen) {
-      setIsDropdownOpen(false);
-      return;
-    }
-
-    dropdownRefs.setReference(e.currentTarget as HTMLElement);
-    setIsDropdownOpen(true);
-  };
-
-  const closeDropdown = () => {
-    setIsDropdownOpen(false);
-  };
-
-  // Modal action handlers
-  const handleUploadFiles = () => {
-    closeDropdown();
-    setIsUploadModalOpen(true);
-  };
-
-  const handleCreateFolder = () => {
-    closeDropdown();
-    setIsFolderModalOpen(true);
-  };
-
-  const handleUploadComplete = (files: File[]) => {
-    console.log("Files uploaded successfully:", files);
-    fetchFiles(undefined, currentFolderId);
-    setIsUploadModalOpen(false);
-  };
-
-  const handleFolderCreated = (folderName: string) => {
-    console.log("Folder created successfully:", folderName);
-    fetchFiles(undefined, currentFolderId);
-  };
-
-  // ============ FIXED CLOSE ON OUTSIDE CLICK ============
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      const target = event.target as Node;
-
-      // Close file popup if clicking outside
-      if (
-        openFilePopup &&
-        filePopupRefs.floating.current &&
-        isHTMLElement(filePopupRefs.floating.current) &&
-        !filePopupRefs.floating.current.contains(target) &&
-        filePopupRefs.reference.current &&
-        isHTMLElement(filePopupRefs.reference.current) &&
-        !filePopupRefs.reference.current.contains(target)
-      ) {
-        closeFilePopup();
-      }
-
-      // Close dropdown if clicking outside
-      if (
-        isDropdownOpen &&
-        dropdownRefs.floating.current &&
-        isHTMLElement(dropdownRefs.floating.current) &&
-        !dropdownRefs.floating.current.contains(target) &&
-        dropdownRefs.reference.current &&
-        isHTMLElement(dropdownRefs.reference.current) &&
-        !dropdownRefs.reference.current.contains(target)
-      ) {
-        closeDropdown();
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [openFilePopup, isDropdownOpen, filePopupRefs, dropdownRefs]);
 
   // ============ STAR/UNSTAR FUNCTIONALITY ============
   const toggleStar = async (fileId: string, currentStarred: boolean) => {
@@ -485,14 +344,12 @@ const FileListView: React.FC<FileListViewProps> = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [fetchMoreFiles, isLoadingMore, hasNextPage]);
 
-  // ============ UPDATED LOAD EFFECT FOR URL FOLDER NAVIGATION ============
+  // ============ LOAD EFFECT FOR URL FOLDER NAVIGATION ============
   useEffect(() => {
     if (enableFolderNavigation) {
-      // Use folderId from URL params
       setCurrentFolderId(folderIdFromURL);
       fetchFiles(undefined, folderIdFromURL);
     } else {
-      // Legacy behavior
       fetchFiles(undefined, currentFolderId);
     }
   }, [
@@ -524,23 +381,25 @@ const FileListView: React.FC<FileListViewProps> = ({
   // ============ MAIN RENDER ============
   return (
     <div
-      className={`${location.pathname !== "/dashboard" ? "mt-2" : "mt-16"} p-4`}
+      className={`${
+        location.pathname !== "/dashboard" ? "px-4 md:p-4 mt-2" : "mt-2 md:mt-16 p-4"
+      }`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="font-antique-olive mt-2 text-white md:text-xl lg:text-2xl tracking-wide">
+      <div className="flex items-center justify-between mb-2 md:mb-4">
+        <h1 className="font-antique-olive mt-2 text-black dark:text-white md:text-xl lg:text-2xl tracking-wide">
           {getDisplayTitle()} {showFileCount && `(${allFiles.length})`}
         </h1>
         <div className="flex items-center justify-center gap-4">
           {showStorage && storage && <HorizontalStorageBar storage={storage} />}
           {headerSlot}
 
-          <button
-            onClick={handleDropdownClick}
-            className="p-2 hover:bg-neutral-700 rounded-lg transition-colors duration-200"
-          >
-            <DotsSixIcon size={32} className="text-white" />
-          </button>
+          {/* REPLACED 6-DOTS BUTTON WITH NEW COMPONENT */}
+          <ActionsDropdown
+            onUploadFiles={() => setIsUploadModalOpen(true)}
+            onCreateFolder={() => setIsFolderModalOpen(true)}
+            onSettings={() => console.log("Settings clicked")}
+          />
         </div>
       </div>
 
@@ -562,13 +421,12 @@ const FileListView: React.FC<FileListViewProps> = ({
       {allFiles.length > 0 ? (
         allFiles.map((file) => {
           const { iconColor, IconComponent } = getFileTypeStyle(file.mimeType);
-          const isFolder =
-            file.mimeType === "application/vnd.google-apps.folder";
+          const isFolder = file.mimeType === "application/vnd.google-apps.folder";
 
           return (
             <div
               key={file.id}
-              className={`grid grid-cols-[70%_30%] md:grid-cols-[45%_20%_15%_15%] lg:grid-cols-[35%_20%_15%_15%_15%] gap-4 h-12 text-white w-full rounded-lg px-4 mb-3 items-center border-[1px] border-neutral-800 bg-[#18181B] hover:bg-neutral-800 hover:scale-[1.008] transition duration-100 cursor-pointer`}
+              className={`grid grid-cols-[70%_30%] md:grid-cols-[45%_20%_15%_15%] lg:grid-cols-[35%_20%_15%_15%_15%] gap-4 h-12 text-black dark:text-white w-full rounded-lg px-4 mb-3 items-center border-[1px] border-neutral-300 dark:border-neutral-800 bg-neutral-300 dark:bg-[#18181B] hover:bg-neutral-400 dark:hover:bg-neutral-800 hover:scale-[1.008] transition duration-100 cursor-pointer`}
               onClick={() => {
                 if (isFolder) {
                   handleFolderClick(file);
@@ -580,11 +438,7 @@ const FileListView: React.FC<FileListViewProps> = ({
               {/* Name + Icon */}
               <div className="flex items-center gap-2">
                 {isFolder ? (
-                  <FolderIcon
-                    size={20}
-                    weight="fill"
-                    className="text-blue-400"
-                  />
+                  <FolderIcon size={20} weight="fill" className="text-blue-400" />
                 ) : (
                   <IconComponent
                     size={20}
@@ -620,17 +474,18 @@ const FileListView: React.FC<FileListViewProps> = ({
                 {formatDate(file.modifiedTime)}
               </div>
 
-              {/* 3 Dots Menu (ALL devices) - Prevent row click */}
+              {/* REPLACED 3-DOTS BUTTON WITH NEW COMPONENT */}
               <div className="flex justify-center items-center">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent row click when clicking dots
-                    handleFileDotsClick(e, file.id);
-                  }}
-                  className="p-2 hover:bg-neutral-700 rounded-full transition-colors duration-200"
-                >
-                  <DotsThreeVerticalIcon size={16} className="text-gray-400" />
-                </button>
+                <FileActionsPopup
+                  file={file}
+                  isTrashView={isTrashView}
+                  onPreview={openFilePreview}
+                  onStar={toggleStar}
+                  onDelete={toggleDelete}
+                  onFileInfo={(file) => console.log("File info:", file)}
+                  starringFile={starringFile}
+                  deletingFile={deletingFile}
+                />
               </div>
             </div>
           );
@@ -860,14 +715,14 @@ const FileListView: React.FC<FileListViewProps> = ({
       <FileUpload
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
-        onUploadComplete={handleUploadComplete}
+        onUploadComplete={() => fetchFiles(undefined, currentFolderId)}
       />
 
       {/* Create Folder Modal */}
       <CreateFolderModal
         isOpen={isFolderModalOpen}
         onClose={() => setIsFolderModalOpen(false)}
-        onFolderCreated={handleFolderCreated}
+        onFolderCreated={() => fetchFiles(undefined, currentFolderId)}
       />
 
       {/* Loading more indicator */}

@@ -52,7 +52,7 @@ const HorizontalStorageBar: React.FC<HorizontalStorageBarProps> = ({ storage }) 
 
   return (
     <>
-      <div className="flex items-center gap-4">
+      <div className="hidden md:flex items-center gap-4">
         {/* Storage text */}
         <div className="text-right">
           <span className="text-blue-400 font-medium text-sm">
