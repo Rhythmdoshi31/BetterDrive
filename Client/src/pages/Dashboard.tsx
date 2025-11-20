@@ -43,6 +43,7 @@ const Dashboard: React.FC = () => {
   const [storage, setStorage] = useState<StorageQuota | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [dashBoardData, setdashBoardData] = useState<DashboardResponse | null>(null);
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0); // Changes whenever a folder is created in DashbGrid.tsx and the key is set in Files.tsx to refresh the component..
 
   // Fetch initial dashboard data (top3, top7, storage)
   const fetchInitialData = async (): Promise<void> => {
@@ -74,6 +75,10 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     fetchInitialData();
   }, []);
+
+  const handleFilesRefresh = () => {
+    setRefreshTrigger(prev => prev + 1);
+  };
 
   const uploadLink = {
     label: "Upload Files",
@@ -112,16 +117,17 @@ const Dashboard: React.FC = () => {
   return (
     <div className="font-fkGrotesk min-h-screen bg-gray-50 dark:bg-black">
       <MainNav user={user} />
-      <CleanSidebar links={links} uploadLink={uploadLink} />
+      <CleanSidebar links={links} uploadLink={uploadLink} onRefresh={handleFilesRefresh} />
 
       <div className="pt-16 overflow-x-hidden">
         <div className="md:ml-[8vw] md:mr-8 lg:mr-14 min-h-screen pb-8">
           
           {/* Dashboard Grid (top3 & top7) */}
-          <DashboardGrid dashBoardData={dashBoardData} />
+          <DashboardGrid dashBoardData={dashBoardData} onRefresh={handleFilesRefresh}/>
           
           {/* All Files List using FileListView */}
           <FileListView 
+            key={refreshTrigger}
             title="All Files"
             apiEndpoint="/api/google/dashboard/files"
             showStorage={true}

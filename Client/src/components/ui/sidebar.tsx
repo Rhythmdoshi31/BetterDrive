@@ -10,12 +10,14 @@ interface CleanSidebarProps {
   links: Links[];
   uploadLink: Links;
   className?: string;
+  onRefresh?: () => void;
 }
 
 export const CleanSidebar: React.FC<CleanSidebarProps> = ({ 
   links, 
   uploadLink, 
-  className 
+  className,
+  onRefresh
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [hoverOrigin, setHoverOrigin] = useState<'top' | 'bottom' | 'center'>('center');
@@ -54,6 +56,7 @@ export const CleanSidebar: React.FC<CleanSidebarProps> = ({
   const handleUploadComplete = (files: File[]) => {
     console.log('Files uploaded successfully:', files);
     setIsUploadModalOpen(false);
+    onRefresh?.();
   };
 
   const detectHoverDirection = useCallback((iconIndex: number, mouseY: number) => {

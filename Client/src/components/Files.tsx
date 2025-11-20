@@ -6,7 +6,7 @@ import type { AxiosResponse } from "axios";
 import type { DriveFile } from "../types";
 import { getFileTypeStyle } from "../utils/fileTypeHelper";
 import HorizontalStorageBar from "./StorageBar";
-import FilePreviewModal from "./FilePreviewModal";
+import FilePreviewModal from "../utils/FilePreviewModal";
 import {
   DotsSixIcon,
   StarIcon,
@@ -32,7 +32,8 @@ import {
   autoUpdate,
 } from "@floating-ui/react";
 import FileUpload from "./FileUpload";
-import CreateFolderModal from "./CreateFolderModal";
+import CreateFolderModal from "../utils/CreateFolderModal";
+import SixDotsDropdown from "../utils/SixDotsDropdown";
 
 // Extended interfaces for folder navigation
 interface FolderMetadata {
@@ -562,9 +563,7 @@ const FileListView: React.FC<FileListViewProps> = ({
       {/* File Rows */}
       {allFiles.length > 0 ? (
         allFiles.map((file) => {
-          const { iconColor, IconComponent } = getFileTypeStyle(
-            file.mimeType
-          );
+          const { iconColor, IconComponent } = getFileTypeStyle(file.mimeType);
           const isFolder =
             file.mimeType === "application/vnd.google-apps.folder";
 
@@ -645,77 +644,28 @@ const FileListView: React.FC<FileListViewProps> = ({
         </div>
       )}
 
-      {/* Header Dropdown Menu - Using Floating UI */}
-      {isDropdownOpen &&
-        createPortal(
-          <AnimatePresence>
-            <motion.div
-              key="header-dropdown-backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-transparent z-[9997]"
-              onClick={closeDropdown}
-            />
-
-            <motion.div
-              key="header-dropdown"
-              ref={dropdownRefs.setFloating}
-              initial={{ opacity: 0, scale: 0.95, y: -10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              transition={{ duration: 0.15 }}
-              className="w-56 bg-neutral-900/95 backdrop-blur-md border border-neutral-600/50 rounded-xl shadow-2xl z-[9999]"
-              style={{
-                position: dropdownStrategy,
-                top: dropdownY ?? 0,
-                left: dropdownX ?? 0,
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="p-2 space-y-1">
-                <button
-                  onClick={handleUploadFiles}
-                  className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
-                >
-                  <UploadIcon
-                    size={18}
-                    className="text-green-500 flex-shrink-0"
-                  />
-                  <span className="text-sm text-gray-200 font-medium">
-                    Upload Files
-                  </span>
-                </button>
-
-                <button
-                  onClick={handleCreateFolder}
-                  className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
-                >
-                  <FolderPlusIcon
-                    size={18}
-                    className="text-blue-500 flex-shrink-0"
-                  />
-                  <span className="text-sm text-gray-200 font-medium">
-                    New Folder
-                  </span>
-                </button>
-
-                <div className="h-px bg-neutral-700/50 my-2"></div>
-
-                <button
-                  onClick={closeDropdown}
-                  className="w-full flex items-center gap-3 p-3 hover:bg-neutral-800/50 rounded-lg transition-colors duration-200"
-                >
-                  <InfoIcon size={18} className="text-gray-400 flex-shrink-0" />
-                  <span className="text-sm text-gray-200 font-medium">
-                    Settings
-                  </span>
-                </button>
-              </div>
-            </motion.div>
-          </AnimatePresence>,
-          document.body
-        )}
+      {/* SixDotsDropdown */}
+      <div className="flex items-center justify-center gap-4">
+        {showStorage && storage && <HorizontalStorageBar storage={storage} />}
+        {headerSlot}
+        <button
+          onClick={handleDropdownClick}
+          className="p-2 hover:bg-neutral-700 rounded-lg transition-colors duration-200"
+        >
+          <DotsSixIcon size={32} className="text-white" />
+        </button>
+        <SixDotsDropdown
+          isOpen={isDropdownOpen}
+          floatingRef={dropdownRefs.setFloating}
+          strategy={dropdownStrategy}
+          x={dropdownX}
+          y={dropdownY}
+          onClickOutside={closeDropdown}
+          onUploadFiles={handleUploadFiles}
+          onCreateFolder={handleCreateFolder}
+          closeDropdown={closeDropdown}
+        />
+      </div>
 
       {/* File Action Popup - Using Floating UI */}
       {openFilePopup &&
