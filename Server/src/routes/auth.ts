@@ -21,6 +21,7 @@ const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${
   }&redirect_uri=${process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3000/auth/google/callback'}&response_type=code&scope=${encodeURIComponent(
     scopes.join(" ")
   )}&access_type=offline&prompt=consent`;
+  res.redirect(authUrl);
 });
 
 // Google OAuth callback - Manual token exchange
