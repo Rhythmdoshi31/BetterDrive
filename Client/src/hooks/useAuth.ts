@@ -13,7 +13,7 @@ export const useAuth = (): AuthHookReturn => {
     try {
       localStorage.removeItem('betterdrive_user');
       
-      await fetch('http://betterdrive-production.up.railway.app/auth/logout', {
+      await fetch('https://betterdrive-production.up.railway.app/auth/logout', {
         method: 'POST',
         credentials: 'include',
       });
