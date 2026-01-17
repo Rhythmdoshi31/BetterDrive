@@ -16,7 +16,7 @@ router.get("/google", (req, res) => {
         "https://www.googleapis.com/auth/drive",
         "https://www.googleapis.com/auth/drive.metadata.readonly",
     ];
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=http://localhost:3000/auth/google/callback&response_type=code&scope=${encodeURIComponent(scopes.join(" "))}&access_type=offline&prompt=consent`;
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=http://betterdrive-production.up.railway.app/auth/google/callback&response_type=code&scope=${encodeURIComponent(scopes.join(" "))}&access_type=offline&prompt=consent`;
     res.redirect(authUrl);
 });
 // Google OAuth callback - Manual token exchange
@@ -31,7 +31,7 @@ router.get("/google/callback", async (req, res) => {
             client_id: process.env.GOOGLE_CLIENT_ID,
             client_secret: process.env.GOOGLE_CLIENT_SECRET,
             code,
-            redirect_uri: "http://localhost:3000/auth/google/callback",
+            redirect_uri: "http://betterdrive-production.up.railway.app/auth/google/callback",
             grant_type: "authorization_code",
         }), {
             headers: {
@@ -55,7 +55,7 @@ router.get("/google/callback", async (req, res) => {
         const existingUser = await (0, handleSignIn_1.handleGoogleSignIn)(userData);
         if (!existingUser) {
             console.error("Failed to sign in user");
-            return res.redirect("http://localhost:3000/error");
+            return res.redirect("http://betterdrive-production.up.railway.app/error");
         }
         // Generate JWT for session management
         const token = jsonwebtoken_1.default.sign({ userId: existingUser.id, email: existingUser.email }, process.env.JWT_SECRET, { expiresIn: "1d" });
@@ -82,7 +82,7 @@ router.get("/google/callback", async (req, res) => {
     }
     catch (error) {
         console.error("Google OAuth Error:", error.response?.data || error.message);
-        res.redirect("http://localhost:3000/error");
+        res.redirect("http://betterdrive-production.up.railway.app/error");
     }
 });
 // Logout route
