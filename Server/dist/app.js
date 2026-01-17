@@ -26,7 +26,7 @@ app.set('trust proxy', 1);
 // Middleware
 app.use((0, cors_1.default)({
     origin: [
-        'http://localhost:3000',
+        'http://betterdrive-production.up.railway.app',
         'http://localhost:5173',
         'https://better-drive-tau.vercel.app',
         'https://betterdrive.rhythmdoshi.site',
@@ -65,7 +65,7 @@ app.use(rateLimiter_1.globalLimiter);
 // Middleware
 app.use((0, cors_1.default)({
     origin: [
-        'http://localhost:3000',
+        'http://betterdrive-production.up.railway.app',
         'http://localhost:5173',
         'https://better-drive-tau.vercel.app',
         'https://betterdrive.rhythmdoshi.site',
