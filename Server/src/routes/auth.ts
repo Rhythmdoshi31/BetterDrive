@@ -105,7 +105,7 @@ router.get("/google/callback", async (req: Request, res: Response) => {
     });
 
     console.log("User signed in:", existingUser.email);
-    res.redirect("https://betterdrive-production.up.railway.app/dashboard");
+    res.redirect("https://betterdrive.rhythmdoshi.site/dashboard");
   } catch (error: any) {
     console.error("Google OAuth Error:", error.response?.data || error.message);
     res.redirect("https://betterdrive-production.up.railway.app/error");
