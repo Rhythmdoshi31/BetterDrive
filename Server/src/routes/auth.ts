@@ -105,10 +105,10 @@ router.get("/google/callback", async (req: Request, res: Response) => {
     });
 
     console.log("User signed in:", existingUser.email);
-    res.redirect("http://localhost:5173/dashboard");
+    res.redirect("https://betterdrive-production.up.railway.app/dashboard");
   } catch (error: any) {
     console.error("Google OAuth Error:", error.response?.data || error.message);
-    res.redirect("http://localhost:3000/error");
+    res.redirect("https://betterdrive-production.up.railway.app/error");
   }
 });
 
