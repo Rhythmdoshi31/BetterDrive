@@ -18,7 +18,7 @@ import {
 
 // Configure axios (same as Recent page)
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://betterdrive-production.up.railway.app";
+axios.defaults.baseURL = "https://betterdrive-production.up.railway.app";
 
 const FoldersPage: React.FC = () => {
   const [searchParams] = useSearchParams();

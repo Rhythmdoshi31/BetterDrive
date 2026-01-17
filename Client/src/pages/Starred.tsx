@@ -17,7 +17,7 @@ import {
 
 // Configure axios
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://betterdrive-production.up.railway.app";
+axios.defaults.baseURL = "https://betterdrive-production.up.railway.app";
 
 const StarredFiles: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
