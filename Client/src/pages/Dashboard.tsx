@@ -68,7 +68,8 @@ const Dashboard: React.FC = () => {
       console.error("Error fetching initial data:", error);
       setError("Failed to fetch dashboard data");
       if (axios.isAxiosError(error) && error.response?.status === 401) {
-        window.location.href = "/";
+        // window.location.href = "/";
+        console.log("Axios error");
       }
     }
   };
