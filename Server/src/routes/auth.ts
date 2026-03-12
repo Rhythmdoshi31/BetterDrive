@@ -87,6 +87,7 @@ router.get("/google/callback", async (req: Request, res: Response) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
+      domain: "betterdrive-production.up.railway.app",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 
@@ -104,6 +105,7 @@ router.get("/google/callback", async (req: Request, res: Response) => {
       httpOnly: false, // Frontend can read
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
+      domain: "betterdrive-production.up.railway.app",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 
