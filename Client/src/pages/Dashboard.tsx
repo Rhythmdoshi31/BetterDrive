@@ -48,6 +48,13 @@ const Dashboard: React.FC = () => {
   // Fetch initial dashboard data (top3, top7, storage)
   const fetchInitialData = async (): Promise<void> => {
     try {
+      // Fetching cookine
+      const userData = getCookieValue<User>("user_data");
+      setUser(userData);
+      if (!userData || !userData.isAuthenticated)
+        window.location.href = "/login";
+      console.log("Got user data from cookie");
+      
       const [dashboardResponse, storageResponse] = await Promise.all([
         axios.get("/api/google/dashboard/files"), // Just for top3 & top7
         axios.get("/api/google/storage")
@@ -56,10 +63,10 @@ const Dashboard: React.FC = () => {
       setdashBoardData(dashboardResponse.data);
       setStorage(storageResponse.data.storage);
       
-      const userData = getCookieValue<User>("user_data");
-      setUser(userData);
-      if (!userData || !userData.isAuthenticated)
-        window.location.href = "/login";
+      // const userData = getCookieValue<User>("user_data");
+      // setUser(userData);
+      // if (!userData || !userData.isAuthenticated)
+      //   window.location.href = "/login";
       
       setLoading(false);
     } catch (error: unknown) {
