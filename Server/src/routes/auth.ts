@@ -1,5 +1,4 @@
 import express, { Request, Response, Router } from "express";
-import passport from "passport";
 import jwt from "jsonwebtoken";
 import axios, { AxiosResponse } from "axios";
 import { handleGoogleSignIn } from "../utils/handleSignIn";
@@ -107,7 +106,10 @@ router.get("/google/callback", async (req: Request, res: Response) => {
     });
 
     console.log("User signed in:", existingUser.email);
-    res.redirect("https://betterdrive.rhythmdoshi.site/dashboard");
+    // CHanging the redirect to backend first then through there we will go to frontend to ensure cookie storage.
+    // res.redirect("https://betterdrive.rhythmdoshi.site/dashboard");
+    // At the bottom of this file...
+    res.redirect("https://betterdrive-production.up.railway.app/auth/success");
   } catch (error: any) {
     console.error("Google OAuth Error:", error.response?.data || error.message);
     res.redirect("https://betterdrive-production.up.railway.app/error");
@@ -118,6 +120,19 @@ router.get("/google/callback", async (req: Request, res: Response) => {
 router.post("/logout", (req: Request, res: Response) => {
   res.clearCookie("token");
   res.json({ message: "Logged out successfully" });
+});
+
+// To redirect from here to frontend waiting for the cookie to be stored
+router.get("/success", (req: Request, res: Response) => {
+  res.send(`
+    <html>
+      <body>
+        <script>
+          window.location.href = "https://betterdrive.rhythmdoshi.site/dashboard";
+        </script>
+      </body>
+    </html>
+  `);
 });
 
 export default router;
