@@ -51,11 +51,12 @@ const Dashboard: React.FC = () => {
       // Moved this part up to get the cookie first... 
       const userData = getCookieValue<User>("user_data");
       if (userData) setUser(userData);
+      else console.log("UserData found" + userData);
       if (!userData || !userData.isAuthenticated) {
         console.log("user data not found from cookie");
         // window.location.href = "/login";
       }
-      
+
       const [dashboardResponse, storageResponse] = await Promise.all([
         axios.get("/api/google/dashboard/files"), // Just for top3 & top7
         axios.get("/api/google/storage")
