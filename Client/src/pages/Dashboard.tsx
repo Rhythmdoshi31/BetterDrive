@@ -48,6 +48,14 @@ const Dashboard: React.FC = () => {
   // Fetch initial dashboard data (top3, top7, storage)
   const fetchInitialData = async (): Promise<void> => {
     try {
+      // Moved this part up to get the cookie first... 
+      const userData = getCookieValue<User>("user_data");
+      if (userData) setUser(userData);
+      if (!userData || !userData.isAuthenticated) {
+        console.log("user data not found from cookie");
+        // window.location.href = "/login";
+      }
+      
       const [dashboardResponse, storageResponse] = await Promise.all([
         axios.get("/api/google/dashboard/files"), // Just for top3 & top7
         axios.get("/api/google/storage")
@@ -56,12 +64,12 @@ const Dashboard: React.FC = () => {
       setdashBoardData(dashboardResponse.data);
       setStorage(storageResponse.data.storage);
       
-      const userData = getCookieValue<User>("user_data");
-      if (userData) setUser(userData);
-      if (!userData || !userData.isAuthenticated) {
-        console.log("user data not found from cookie");
-        // window.location.href = "/login";
-      }
+      // const userData = getCookieValue<User>("user_data");
+      // if (userData) setUser(userData);
+      // if (!userData || !userData.isAuthenticated) {
+      //   console.log("user data not found from cookie");
+      //   // window.location.href = "/login";
+      // }
 
       setLoading(false);
     } catch (error: unknown) {
