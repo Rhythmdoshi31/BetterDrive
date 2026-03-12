@@ -50,9 +50,11 @@ const Dashboard: React.FC = () => {
     try {
       // Fetching cookine
       const userData = getCookieValue<User>("user_data");
+      console.log(userData + "userData");
       setUser(userData);
       if (!userData || !userData.isAuthenticated)
-        window.location.href = "/login";
+        console.log("User data not found", userData)
+        // window.location.href = "/login";
       console.log("Got user data from cookie");
       
       const [dashboardResponse, storageResponse] = await Promise.all([
