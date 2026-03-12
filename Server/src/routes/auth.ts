@@ -16,8 +16,8 @@ router.get("/google", (req: Request, res: Response) => {
   ];
 
 const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${
-    process.env.GOOGLE_CLIENT_ID
-  }&redirect_uri=${process.env.GOOGLE_CALLBACK_URL || 'https://betterdrive-production.up.railway.app/auth/google/callback'}&response_type=code&scope=${encodeURIComponent(
+    process.env.GOOGLE_CLIENT_ID 
+  }&redirect_uri=${process.env.GOOGLE_CALLBACK_URL || `${process.env.BACKEND_URL}/auth/google/callback`}&response_type=code&scope=${encodeURIComponent(
     scopes.join(" ")
   )}&access_type=offline&prompt=consent`;
   res.redirect(authUrl);
@@ -39,7 +39,7 @@ router.get("/google/callback", async (req: Request, res: Response) => {
         client_id: process.env.GOOGLE_CLIENT_ID!,
         client_secret: process.env.GOOGLE_CLIENT_SECRET!,
         code,
-        redirect_uri: process.env.GOOGLE_CALLBACK_URL!,
+        redirect_uri: process.env.GOOGLE_CALLBACK_URL || `${process.env.BACKEND_URL}/auth/google/callback`,
         grant_type: "authorization_code",
       }),
       {
@@ -72,7 +72,7 @@ router.get("/google/callback", async (req: Request, res: Response) => {
 
     if (!existingUser) {
       console.error("Failed to sign in user");
-      return res.redirect("https://betterdrive-production.up.railway.app/error");
+      return res.redirect(`${process.env.BACKEND_URL}/error`);
     }
 
     // Generate JWT for session management
@@ -87,7 +87,7 @@ router.get("/google/callback", async (req: Request, res: Response) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
-      domain: "betterdrive-production.up.railway.app",
+      domain: ".rhythmdoshi.site",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 
@@ -105,7 +105,7 @@ router.get("/google/callback", async (req: Request, res: Response) => {
       httpOnly: false, // Frontend can read
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
-      domain: "betterdrive-production.up.railway.app",
+      domain: ".rhythmdoshi.site",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 
@@ -113,10 +113,10 @@ router.get("/google/callback", async (req: Request, res: Response) => {
     // CHanging the redirect to backend first then through there we will go to frontend to ensure cookie storage.
     // res.redirect("https://betterdrive.rhythmdoshi.site/dashboard");
     // At the bottom of this file...
-    res.redirect("https://betterdrive-production.up.railway.app/auth/success");
+    res.redirect(`${process.env.BACKEND_URL}/auth/success`);
   } catch (error: any) {
     console.error("Google OAuth Error:", error.response?.data || error.message);
-    res.redirect("https://betterdrive-production.up.railway.app/error");
+    res.redirect(`${process.env.BACKEND_URL}/auth/error`);
   }
 });
 
