@@ -75,9 +75,14 @@ const Dashboard: React.FC = () => {
   };
   
   console.log("DashbData", dashBoardData);
+  // Since api calls are done even before the cookie is propogated so adding delay
   useEffect(() => {
+  const timer = setTimeout(() => {
     fetchInitialData();
-  }, []);
+  }, 500);
+
+  return () => clearTimeout(timer);
+}, []);
 
   const handleFilesRefresh = () => {
     setRefreshTrigger(prev => prev + 1);
