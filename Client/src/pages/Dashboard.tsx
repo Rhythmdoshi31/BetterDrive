@@ -35,7 +35,7 @@ interface DashboardResponse {
 
 // Configure axios
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "https://betterdrive-production.up.railway.app";
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 
 const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -48,6 +48,15 @@ const Dashboard: React.FC = () => {
   // Fetch initial dashboard data (top3, top7, storage)
   const fetchInitialData = async (): Promise<void> => {
     try {
+      // Moved this part up to get the cookie first... 
+      const userData = getCookieValue<User>("user_data");
+      if (userData) setUser(userData);
+      else console.log("UserData found" + userData);
+      if (!userData || !userData.isAuthenticated) {
+        console.log("user data not found from cookie");
+        // window.location.href = "/login";
+      }
+
       const [dashboardResponse, storageResponse] = await Promise.all([
         axios.get("/api/google/dashboard/files"), // Just for top3 & top7
         axios.get("/api/google/storage")
@@ -56,27 +65,33 @@ const Dashboard: React.FC = () => {
       setdashBoardData(dashboardResponse.data);
       setStorage(storageResponse.data.storage);
       
-      const userData = getCookieValue<User>("user_data");
-      if (userData) setUser(userData);
-      if (!userData || !userData.isAuthenticated) {
-        console.log("user data not found from cookie");
-        // window.location.href = "/login";
-      }
+      // const userData = getCookieValue<User>("user_data");
+      // if (userData) setUser(userData);
+      // if (!userData || !userData.isAuthenticated) {
+      //   console.log("user data not found from cookie");
+      //   // window.location.href = "/login";
+      // }
 
       setLoading(false);
     } catch (error: unknown) {
       console.error("Error fetching initial data:", error);
       setError("Failed to fetch dashboard data");
       if (axios.isAxiosError(error) && error.response?.status === 401) {
-        window.location.href = "/";
+        // window.location.href = "/";
+        console.log("Axios error");
       }
     }
   };
   
   console.log("DashbData", dashBoardData);
+  // Since api calls are done even before the cookie is propogated so adding delay
   useEffect(() => {
+  const timer = setTimeout(() => {
     fetchInitialData();
-  }, []);
+  }, 500);
+
+  return () => clearTimeout(timer);
+}, []);
 
   const handleFilesRefresh = () => {
     setRefreshTrigger(prev => prev + 1);

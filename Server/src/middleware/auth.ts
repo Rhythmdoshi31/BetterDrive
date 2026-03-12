@@ -12,6 +12,8 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): vo
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
+    // Added thisss...
+    console.log("Token has been decoded");
     // Type assertion to add user to req
     (req as Request & { user?: JWTPayload }).user = decoded;
     next();

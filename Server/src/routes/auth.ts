@@ -1,5 +1,4 @@
 import express, { Request, Response, Router } from "express";
-import passport from "passport";
 import jwt from "jsonwebtoken";
 import axios, { AxiosResponse } from "axios";
 import { handleGoogleSignIn } from "../utils/handleSignIn";
@@ -17,8 +16,8 @@ router.get("/google", (req: Request, res: Response) => {
   ];
 
 const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${
-    process.env.GOOGLE_CLIENT_ID
-  }&redirect_uri=${process.env.GOOGLE_CALLBACK_URL || 'https://betterdrive-production.up.railway.app/auth/google/callback'}&response_type=code&scope=${encodeURIComponent(
+    process.env.GOOGLE_CLIENT_ID 
+  }&redirect_uri=${process.env.GOOGLE_CALLBACK_URL || `${process.env.BACKEND_URL}/auth/google/callback`}&response_type=code&scope=${encodeURIComponent(
     scopes.join(" ")
   )}&access_type=offline&prompt=consent`;
   res.redirect(authUrl);
@@ -40,7 +39,7 @@ router.get("/google/callback", async (req: Request, res: Response) => {
         client_id: process.env.GOOGLE_CLIENT_ID!,
         client_secret: process.env.GOOGLE_CLIENT_SECRET!,
         code,
-        redirect_uri: process.env.GOOGLE_CALLBACK_URL!,
+        redirect_uri: process.env.GOOGLE_CALLBACK_URL || `${process.env.BACKEND_URL}/auth/google/callback`,
         grant_type: "authorization_code",
       }),
       {
@@ -73,7 +72,7 @@ router.get("/google/callback", async (req: Request, res: Response) => {
 
     if (!existingUser) {
       console.error("Failed to sign in user");
-      return res.redirect("https://betterdrive-production.up.railway.app/error");
+      return res.redirect(`${process.env.BACKEND_URL}/error`);
     }
 
     // Generate JWT for session management
@@ -88,6 +87,7 @@ router.get("/google/callback", async (req: Request, res: Response) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
+      domain: ".rhythmdoshi.site",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 
@@ -97,20 +97,26 @@ router.get("/google/callback", async (req: Request, res: Response) => {
       email: userResponse.data.email, // For display purposes
       isAuthenticated: true,
     };
+    // Added this...
+    if (minimalUserData) console.log("Got user data " + minimalUserData.email);
 
     // Set minimal user data cookie
     res.cookie("user_data", JSON.stringify(minimalUserData), {
       httpOnly: false, // Frontend can read
       secure: process.env.NODE_ENV === "production",
       sameSite: "none",
+      domain: ".rhythmdoshi.site",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 
     console.log("User signed in:", existingUser.email);
-    res.redirect("https://betterdrive.rhythmdoshi.site/dashboard");
+    // CHanging the redirect to backend first then through there we will go to frontend to ensure cookie storage.
+    // res.redirect("https://betterdrive.rhythmdoshi.site/dashboard");
+    // At the bottom of this file...
+    res.redirect(`${process.env.BACKEND_URL}/auth/success`);
   } catch (error: any) {
     console.error("Google OAuth Error:", error.response?.data || error.message);
-    res.redirect("https://betterdrive-production.up.railway.app/error");
+    res.redirect(`${process.env.BACKEND_URL}/auth/error`);
   }
 });
 
@@ -118,6 +124,19 @@ router.get("/google/callback", async (req: Request, res: Response) => {
 router.post("/logout", (req: Request, res: Response) => {
   res.clearCookie("token");
   res.json({ message: "Logged out successfully" });
+});
+
+// To redirect from here to frontend waiting for the cookie to be stored
+router.get("/success", (req: Request, res: Response) => {
+  res.send(`
+    <html>
+      <body>
+        <script>
+          window.location.href = "https://betterdrive.rhythmdoshi.site/dashboard";
+        </script>
+      </body>
+    </html>
+  `);
 });
 
 export default router;

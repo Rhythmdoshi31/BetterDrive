@@ -25,11 +25,8 @@ app.set('trust proxy', 1);
 // Middleware
 app.use(cors({
   origin: [
-    'https://betterdrive-production.up.railway.app',
     'http://localhost:5173',
-    'https://better-drive-tau.vercel.app',
     'https://betterdrive.rhythmdoshi.site',
-    'https://betterdrive-production.up.railway.app',
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -63,21 +60,6 @@ app.use(helmet({
 
 // Apply global rate limiting THIRD
 app.use(globalLimiter);
-
-// Middleware
-app.use(cors({
-  origin: [
-    'https://betterdrive-production.up.railway.app',
-    'http://localhost:5173',
-    'https://better-drive-tau.vercel.app',
-    'https://betterdrive.rhythmdoshi.site',
-    'https://betterdrive-production.up.railway.app',
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200
-}));
 
 app.use(express.json());
 app.use(cookieParser());

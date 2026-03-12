@@ -17,7 +17,7 @@ import {
 
 // Configure axios
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "https://betterdrive-production.up.railway.app";
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 
 const RecentFiles: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
