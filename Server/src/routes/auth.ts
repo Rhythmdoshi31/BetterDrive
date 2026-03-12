@@ -87,6 +87,7 @@ router.get("/google/callback", async (req: Request, res: Response) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 
@@ -101,6 +102,7 @@ router.get("/google/callback", async (req: Request, res: Response) => {
     res.cookie("user_data", JSON.stringify(minimalUserData), {
       httpOnly: false, // Frontend can read
       secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 
