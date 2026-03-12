@@ -32,7 +32,8 @@ export default async (req: Request, res: Response): Promise<void> => {
       res.status(401).json({ error: "Unauthorized" });
       return;
     }
-
+    // Added thiss
+    console.log(userPayload + "userpayload");
     // Get user and refresh token
     const user = await prisma.user.findUnique({
       where: { id: userPayload.userId },

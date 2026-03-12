@@ -96,6 +96,8 @@ router.get("/google/callback", async (req: Request, res: Response) => {
       email: userResponse.data.email, // For display purposes
       isAuthenticated: true,
     };
+    // Added this...
+    if (minimalUserData) console.log("Got user data " + minimalUserData);
 
     // Set minimal user data cookie
     res.cookie("user_data", JSON.stringify(minimalUserData), {
