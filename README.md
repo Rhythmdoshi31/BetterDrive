@@ -1,7 +1,9 @@
 # BetterDrive 👑
 
 #### Google Drive, That Feels Right.
-✨ **Live**: [https://betterdrive.rhythmdoshi.site](https://betterdrive.rhythmdoshi.site)
+✨ **Live**: 
+- [https://betterdrive.rhythmdoshi.site](https://betterdrive.rhythmdoshi.site)
+- [https://rhythmdoshi.site/project/betterdrive](https://rhythmdoshi.site/project/betterdrive)
 
 <img width="630" height="420" alt="OGimg1200" src="https://github.com/user-attachments/assets/1b1c85bf-1d9f-4328-aa08-5c9bfc0f8781" />
 
