@@ -2,8 +2,8 @@
 
 #### Google Drive, That Feels Right.
 ✨ **Live**: 
-- [https://betterdrive.rhythmdoshi.site](https://betterdrive.rhythmdoshi.site)
-- [https://rhythmdoshi.site/project/betterdrive](https://rhythmdoshi.site/project/betterdrive)
+- [https://betterdrive.rhythmdoshi.site](https://betterdrive.rhythmdoshi.xyz)
+- [https://rhythmdoshi.site/project/betterdrive](https://rhythmdoshi.xyz/project/betterdrive)
 
 <img width="630" height="420" alt="OGimg1200" src="https://github.com/user-attachments/assets/1b1c85bf-1d9f-4328-aa08-5c9bfc0f8781" />
 
@@ -65,7 +65,7 @@ npm run dev
 ## 📬 Join the Waitlist
 
 Want early access, exclusive updates, and a chance to shape the future of BetterDrive?  
-👉 **Join the VIP waitlist now**: [https://betterdrive.rhythmdoshi.site/waitlist](https://betterdrive.rhythmdoshi.site/waitlist)
+👉 **Join the VIP waitlist now**: [https://betterdrive.rhythmdoshi.xyz/waitlist](https://betterdrive.rhythmdoshi.xyz/waitlist)
 
 Be among the first to unlock special features and help us build something amazing!
 
@@ -88,7 +88,7 @@ Contributions are welcome! Whether it's UI improvements, bug fixes, or new featu
 
 Rhythm Doshi  
 📧 [rhythmdoshi04@gmail.com](mailto:rhythmdoshi04@gmail.com)  
-🌐 [https://betterdrive.rhythmdoshi.site](https://rhythmdoshi.site)
+🌐 [https://betterdrive.rhythmdoshi.xyz](https://rhythmdoshi.xyz)
 
 ---
 
